@@ -1,0 +1,219 @@
+' Generate acquisition coordinates from independent package repository HEADs.
+' Run from a clean workspace after publishing the exact revisions it records.
+
+Private Function ReadText(file As FileSystemItem) As String
+    Dim content As Result Of String, String = file.ReadAllText()
+    If content.IsErr Then Throw New IOException("Cannot read " + file.FullPath() + ": " + content.Error)
+    Return content.Value
+End Function
+
+Private Function ReadJSON(file As FileSystemItem) As JSONItem
+    Return Json.Parse(ReadText(file))
+End Function
+
+Private Function Revision(repo As FileSystemItem) As String
+    Dim head As String = String.Trim(ReadText(repo.Child(".git/HEAD")))
+    If String.StartsWith(head, "ref: ") Then
+        Dim reference As String = String.Trim(String.Mid(head, 5))
+        Dim loose As FileSystemItem = repo.Child(".git/" + reference)
+        If loose.IsFile() Then Return String.Trim(ReadText(loose))
+        Dim packedRefs As FileSystemItem = repo.Child(".git/packed-refs")
+        If packedRefs.IsFile() Then
+            For Each line As String In String.Split(ReadText(packedRefs), "\n")
+                If String.EndsWith(String.Trim(line), " " + reference) Then Return String.Split(line, " ")(0)
+            Next
+        End If
+        Throw New IOException("Cannot resolve Git HEAD: " + repo.FullPath())
+    End If
+    Return head
+End Function
+
+Private Sub ScanImports(folder As FileSystemItem, known As JSONItem, ownName As String, found As JSONItem)
+    If Not folder.IsFolder() Then Return
+    For Each file As FileSystemItem In folder.Children()
+        If file.IsFolder() Then
+            ScanImports(file, known, ownName, found)
+        ElseIf String.EndsWith(file.Name(), ".bui") Then
+            For Each sourceLine As String In String.Split(ReadText(file), "\n")
+                Dim line As String = String.Trim(sourceLine)
+                If String.StartsWith(String.LCase(line), "import ") Then
+                    Dim moduleName As String = String.LCase(String.Split(String.Trim(String.Mid(line, 7)), " ")(0))
+                    moduleName = String.Split(moduleName, ".")(0)
+                    If moduleName <> ownName And known.HasKey(moduleName) Then found.Value(moduleName) = True
+                End If
+            Next
+        End If
+    Next
+End Sub
+
+Private Function Covers(files As JSONItem, relative As String) As Boolean
+    For i As Integer = 0 To files.Count() - 1
+        Dim selected As String = files.ValueAt(i).AsString().Or("")
+        If selected = relative Or String.StartsWith(relative, selected + "/") Then Return True
+    Next
+    Return False
+End Function
+
+Private Function PubliclyListed(record As JSONItem) As Boolean
+    Dim policy As JSONItem = record.Value("publication")
+    If Not policy.IsObject() Then Return True
+    If policy.Value("visibility").AsString().Or("") = "private" Then Return False
+    If policy.Value("hold").AsString().Or("") <> "" Then Return False
+    Return policy.Value("listed").AsBoolean().Or(True)
+End Function
+
+Private Sub AuditPackage(name As String, folder As FileSystemItem, settings As JSONItem, imports As JSONItem, known As JSONItem)
+    If name = "rbcodec" Then
+        If Not folder.Child("LICENSE").IsFile() Then Throw New IOException("rbcodec: reserved-rights license missing")
+        If Not String.Contains(String.LCase(ReadText(folder.Child("LICENSE"))), "all rights reserved") Then Throw New InvalidArgumentException("rbcodec: reserved-rights policy missing")
+        For Each retired As String In ["LICENSE-MIT.txt", "LICENSE-APACHE.txt", "LICENSE-DOCS.txt"]
+            If folder.Child(retired).Exists() Or folder.Child("resources/buoybay-licenses/" + retired).Exists() Then Throw New InvalidArgumentException("rbcodec: retired first-party grant remains: " + retired)
+        Next
+    End If
+    If Not settings.Value("dependencies").IsObject() Then Throw New InvalidArgumentException(name + ": dependencies must be an object")
+    Dim dependencies As JSONItem = settings.Value("dependencies")
+    For Each dependency As String In dependencies.Keys()
+        Dim source As JSONItem = dependencies.Value(dependency)
+        If Not known.HasKey(dependency) Then Throw New InvalidArgumentException(name + ": unknown package dependency " + dependency)
+        If Not source.IsObject() Then Throw New InvalidArgumentException(name + ": dependency source must be an object: " + dependency)
+        If source.Count() <> 2 Or source.Value("git").AsString().Or("") <> "https://github.com/BuoyBay/" + dependency + ".git" Or source.Value("rev").AsString().Or("") = "" Then Throw New InvalidArgumentException(name + ": invalid root Git source contract: " + dependency)
+    Next
+    For Each dependency As String In imports.Keys()
+        If Not dependencies.HasKey(dependency) Then Throw New InvalidArgumentException(name + ": imported dependency missing metadata: " + dependency)
+    Next
+    Dim files As JSONItem = settings.Value("files")
+    If Not files.IsArray() Then Throw New InvalidArgumentException(name + ": files must be an array")
+    For i As Integer = 0 To files.Count() - 1
+        Dim relative As String = files.ValueAt(i).AsString().Or("")
+        If relative = "" Or String.Contains(relative, "\\") Or String.Contains(relative, ":") Then Throw New InvalidArgumentException(name + ": invalid selected input path")
+        For Each component As String In String.Split(relative, "/")
+            If component = "" Or component = "." Or component = ".." Then Throw New InvalidArgumentException(name + ": unsafe selected input path: " + relative)
+        Next
+        If Not folder.Child(relative).Exists() Then Throw New IOException(name + ": selected input missing: " + relative)
+    Next
+    For Each required As String In ["manifest.json", "modules", "declares", "resources", "link", "runtime", "LICENSE", "LICENSE-MIT.txt", "LICENSE-APACHE.txt", "LICENSE-DOCS.txt", "NOTICE.md"]
+        If folder.Child(required).Exists() And Not Covers(files, required) Then Throw New InvalidArgumentException(name + ": compiler/license input excluded: " + required)
+    Next
+    For Each input As FileSystemItem In folder.Children()
+        Dim filename As String = String.UCase(input.Name())
+        If input.IsFile() And (String.Contains(filename, "LICENSE") Or String.Contains(filename, "NOTICE") Or String.Contains(filename, "PROVENANCE") Or String.Contains(filename, "ATTRIBUTION")) Then
+            If Not Covers(files, input.Name()) Then Throw New InvalidArgumentException(name + ": root notice excluded: " + input.Name())
+            Dim archivedNotice As FileSystemItem = folder.Child("resources/buoybay-licenses/" + input.Name())
+            If Not archivedNotice.IsFile() Then Throw New IOException(name + ": archive-visible notice missing: " + input.Name())
+            If ReadText(archivedNotice) <> ReadText(input) Then Throw New InvalidArgumentException(name + ": archive-visible notice differs: " + input.Name())
+        End If
+    Next
+End Sub
+
+Function Main(args As Array Of String) As Integer
+    Try
+        Dim auditOnly As Boolean = False
+        Dim rootPath As String
+        If Array.Count(args) = 3 And args(1) = "audit" Then
+            auditOnly = True
+            rootPath = args(2)
+        ElseIf Array.Count(args) = 2 And args(1) <> "--help" Then
+            rootPath = args(1)
+        Else
+            Print "usage: package-catalog WORKSPACE_ROOT > packages.json"
+            Print "       package-catalog audit WORKSPACE_ROOT"
+            Print "Audit checks initial BuoyBay Git source shapes, import metadata and selected input coverage."
+            Print "Compile: buoy tools/package_catalog.bui -o dist/package-catalog"
+            Return 0
+        End If
+        Dim root As New FileSystemItem(rootPath)
+        Dim records As JSONItem = ReadJSON(root.Child("workspace.json")).Value("repositories")
+        Dim known As JSONItem = JSONItem.NewObject()
+        For i As Integer = 0 To records.Count() - 1
+            Dim record As JSONItem = records.ValueAt(i)
+            Dim name As String = record.Value("name").AsString().Value
+            Dim repo As FileSystemItem = root.Child(record.Value("path").AsString().Value)
+            If repo.Child("manifest.json").IsFile() Or repo.Child("libraries/" + name + "/manifest.json").IsFile() Then known.Value(name) = True
+        Next
+        Dim catalog As JSONItem = JSONItem.NewObject()
+        catalog.Value("schema") = 1
+        catalog.Value("organization") = "BuoyBay"
+        catalog.Value("revisionMeaning") = "local repository HEAD; verify remote reachability before installation"
+        catalog.Value("auditScope") = "Source import scan and BPM metadata shape; not compiler, runtime, license completeness or remote publication verification"
+        Dim packages As JSONItem = JSONItem.NewArray()
+        Dim audited As Integer = 0
+        For i As Integer = 0 To records.Count() - 1
+            Dim record As JSONItem = records.ValueAt(i)
+            Dim name As String = record.Value("name").AsString().Value
+            If Not known.HasKey(name) Then Continue For
+            Dim repo As FileSystemItem = root.Child(record.Value("path").AsString().Value)
+            Dim subdir As String = ""
+            Dim folder As FileSystemItem = repo
+            If Not repo.Child("manifest.json").IsFile() Then
+                subdir = "libraries/" + name
+                folder = repo.Child(subdir)
+            End If
+            Dim manifest As JSONItem = ReadJSON(folder.Child("manifest.json"))
+            Dim entry As JSONItem = JSONItem.NewObject()
+            entry.Value("name") = name
+            entry.Value("license") = record.Value("license")
+            entry.Value("manifestVersion") = manifest.Value("version")
+            entry.Value("expectedVersionTag") = "v" + manifest.Value("version").AsString().Value
+            If subdir <> "" Then entry.Value("expectedVersionTag") = subdir + "/v" + manifest.Value("version").AsString().Value
+            Dim source As JSONItem = JSONItem.NewObject()
+            source.Value("git") = record.Value("url")
+            source.Value("rev") = Revision(repo)
+            If subdir <> "" Then source.Value("subdir") = subdir
+            entry.Value("source") = source
+            If name = "httpkit" Then entry.Value("runtimeBlocker") = "Requires explicitly built HTTPServer-1.1.0-httpkit.1 compatibility archive; see TOOLCHAIN-REQUIREMENTS.md"
+            Dim audit As JSONItem = JSONItem.NewObject()
+            Dim settings As JSONItem = JSONItem.NewObject()
+            Dim hasBPM As Boolean = folder.Child("bpm.json").IsFile()
+            If hasBPM Then settings = ReadJSON(folder.Child("bpm.json"))
+            audit.Value("hasBpmManifest") = hasBPM
+            Dim dependencies As JSONItem = settings.Value("dependencies")
+            If dependencies.IsNull() Then dependencies = JSONItem.NewObject()
+            audit.Value("declaredDependencies") = dependencies
+            Dim invalid As JSONItem = JSONItem.NewArray()
+            Dim localSources As JSONItem = JSONItem.NewArray()
+            For Each dependency As String In dependencies.Keys()
+                Dim origin As JSONItem = dependencies.Value(dependency)
+                If Not origin.IsObject() Then
+                    invalid.Add(dependency)
+                ElseIf origin.HasKey("path") Or origin.HasKey("archive") Then
+                    localSources.Add(dependency)
+                End If
+            Next
+            audit.Value("nonObjectDependencySources") = invalid
+            audit.Value("localDependencySourcesRejectedForGit") = localSources
+            Dim imports As JSONItem = JSONItem.NewObject()
+            ScanImports(folder.Child("modules"), known, name, imports)
+            AuditPackage(name, folder, settings, imports, known)
+            Dim imported As JSONItem = JSONItem.NewArray()
+            Dim missing As JSONItem = JSONItem.NewArray()
+            For Each dependency As String In imports.Keys()
+                imported.Add(dependency)
+                If Not dependencies.HasKey(dependency) Then missing.Add(dependency)
+            Next
+            audit.Value("inferredPackageImports") = imported
+            audit.Value("importsWithoutDependencyMetadata") = missing
+            audit.Value("nativeLibraries") = manifest.Value("libraries")
+            Dim licenseFiles As JSONItem = JSONItem.NewArray()
+            For Each licenseFile As String In ["LICENSE", "LICENSE.md", "LICENSE-MIT.txt", "LICENSE-APACHE.txt", "LICENSE-DOCS.txt", "NOTICE.md", "LICENSING.md"]
+                If folder.Child(licenseFile).IsFile() Then licenseFiles.Add(licenseFile)
+            Next
+            audit.Value("packageLocalLicenseFiles") = licenseFiles
+            entry.Value("audit") = audit
+            audited += 1
+            If PubliclyListed(record) Then packages.Add(entry)
+        Next
+        catalog.Value("packages") = packages
+        If auditOnly Then
+            Print "Audited " + String.From(audited) + " packages (" + String.From(packages.Count()) + " publicly listed): Git source shapes, declared sibling imports, selected inputs, native/link/resource coverage and root license/notice inclusion."
+            Print "HTTPKit runtime remains blocked pending its documented modified HTTPServer archive."
+            Return 0
+        End If
+        Dim options As New JSONOptions
+        options.Compact = False
+        Print Json.Stringify(catalog, options)
+        Return 0
+    Catch e As Exception
+        Print e.Message
+        Return 1
+    End Try
+End Function

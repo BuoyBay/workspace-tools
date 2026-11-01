@@ -1,0 +1,226 @@
+' Keep dedicated test inputs local while retaining their ownership for validation.
+
+Private Function ReadText(file As FileSystemItem) As String
+    Dim content As Result Of String, String = file.ReadAllText()
+    If content.IsErr Then Throw New IOException("Cannot read " + file.FullPath())
+    Return content.Value
+End Function
+
+Private Sub WriteJSON(file As FileSystemItem, value As JSONItem)
+    Dim options As New JSONOptions
+    options.Compact = False
+    Dim outcome As Result Of Integer, String = file.WriteAllText(Json.Stringify(value, options) + "\n")
+    If outcome.IsErr Then Throw New IOException("Cannot write " + file.FullPath())
+End Sub
+
+Private Function PrivatePath(relative As String) As Boolean
+    Dim relativePath As String = String.LCase(relative)
+    ' The reusable testing framework is production package source.
+    If String.StartsWith(relativePath, "libraries/testkit/modules/") Then Return False
+    Dim parts As Array Of String = String.Split(relativePath, "/")
+    For Each part As String In parts
+        If part = "tests" Or part = "test" Or part = "validation" Or part = "fixtures" Or part = "evidence" Then Return True
+    Next
+    Dim name As String = parts(parts.Count - 1)
+    If String.EndsWith(name, ".md") And Not String.Contains(name, "license") And Not String.Contains(name, "licensing") And Not String.Contains(name, "provenance") And Not String.Contains(name, "copyright") And Not String.Contains(name, "attribution") Then
+        If name = "audit.md" Or name = "review.md" Or name = "acceptance.md" Or name = "astra.md" Then Return True
+        For Each ending As String In ["_audit.md", "-audit.md", "_review.md", "-review.md", "_acceptance.md", "-acceptance.md"]
+            If String.EndsWith(name, ending) Then Return True
+        Next
+        If String.Contains(name, "final") And (String.Contains(name, "audit") Or String.Contains(name, "review") Or String.Contains(name, "acceptance")) Then Return True
+        If String.StartsWith(name, "audit") And String.Len(name) > 5 Then
+            Dim digit As String = String.Mid(name, 6, 1)
+            If String.Asc(digit) >= 48 And String.Asc(digit) <= 57 Then Return True
+        End If
+    End If
+    If String.StartsWith(name, "test_") Or String.StartsWith(name, "test-") Or String.StartsWith(name, "test.") Or String.StartsWith(name, "tests.") Then Return True
+    For Each marker As String In ["_test.", "_tests.", "-test.", "-tests.", "_validation.", "-validation.", "_smoke.", "-smoke."]
+        If String.Contains(name, marker) Then Return True
+    Next
+    For Each ending As String In ["_test", "_tests", "-test", "-tests"]
+        If String.EndsWith(name, ending) Then Return True
+    Next
+    Return String.StartsWith(name, "validation.") Or String.StartsWith(name, "smoke.") Or String.StartsWith(name, "testing.") Or name = "public_package_validation.md"
+End Function
+
+Private Sub FindTests(folder As FileSystemItem, relative As String, found As JSONItem, rootScan As Boolean)
+    For Each file As FileSystemItem In folder.Children()
+        Dim name As String = file.Name()
+        Dim relativePath As String = name
+        If relative <> "" Then relativePath = relative + "/" + name
+        If file.IsFolder() Then
+            If name = ".git" Or name = ".buoy" Or name = ".bpm" Or name = "node_modules" Or name = "__pycache__" Or name = "local" Or name = "dist" Or name = "build" Or name = "target" Then Continue For
+            If rootScan And relative = "" And name = "repos" Then Continue For
+            FindTests(file, relativePath, found, rootScan)
+        ElseIf file.IsFile() And PrivatePath(relativePath) Then
+            found.Value(relativePath) = True
+        End If
+    Next
+End Sub
+
+Private Function FoldPatterns(patterns As Array Of String) As String
+    Dim body As String = ""
+    For Each pattern As String In patterns
+        Dim folded As String = ""
+        For Each character As String In String.Chars(pattern)
+            If String.Asc(character) >= 97 And String.Asc(character) <= 122 Then
+                folded += "[" + character + String.UCase(character) + "]"
+            Else
+                folded += character
+            End If
+        Next
+        body += folded + "\n"
+    Next
+    Return body
+End Function
+
+Private Sub IgnoreTests(repo As FileSystemItem)
+    Dim ignore As FileSystemItem = repo.Child(".gitignore")
+    Dim original As String = ""
+    If ignore.IsFile() Then original = ReadText(ignore)
+    Dim body As String = original
+    Dim marker As String = "# Dedicated test inputs remain private and local."
+    Dim caseMarker As String = "# Test pattern case variants."
+    If Not String.Contains(body, caseMarker) Then
+        body += "\n" + marker + "\n" + caseMarker + "\n"
+        body += FoldPatterns(["tests/", "test/", "validation/", "fixtures/", "evidence/", "test_*", "test-*", "test.*", "tests.*", "*_test.*", "*_tests.*", "*-test.*", "*-tests.*", "*_test", "*_tests", "*-test", "*-tests", "*_validation.*", "*-validation.*", "validation.*", "*_smoke.*", "*-smoke.*", "smoke.*", "public_package_validation.md"])
+        body += "!libraries/testkit/modules/\n!libraries/testkit/modules/**\n"
+    End If
+    If Not String.Contains(body, "# Private validation guides.") Then body += "\n# Private validation guides.\n" + FoldPatterns(["testing.*"])
+    If Not String.Contains(body, "# Historical review reports remain private.") Then
+        body += "\n# Historical review reports remain private.\n"
+        body += FoldPatterns(["audit.md", "review.md", "acceptance.md", "astra.md", "*_audit.md", "*-audit.md", "*_review.md", "*-review.md", "*_acceptance.md", "*-acceptance.md", "*final*audit*.md", "*final*review*.md", "*final*acceptance*.md", "audit[0-9]*.md"])
+    End If
+    If body = original Then Return
+    Dim outcome As Result Of Integer, String = ignore.WriteAllText(body)
+    If outcome.IsErr Then Throw New IOException("Cannot update " + ignore.FullPath())
+End Sub
+
+Private Function NewLogicalPath(record As JSONItem, repo As FileSystemItem, physical As String) As String
+    Dim mapping As JSONItem = record.Value("integrationPaths")
+    If mapping.IsObject() And mapping.HasKey(physical) Then Return mapping.Value(physical).AsString().Value
+    If repo.Child("manifest.json").IsFile() Then
+        Dim first As String = String.LCase(String.Split(physical, "/")(0))
+        If first = "examples" Or first = "tools" Then Return physical
+        Return "libraries/" + record.Value("name").AsString().Value + "/" + physical
+    End If
+    Dim best As Integer = -1
+    Dim logical As String = physical
+    If mapping.IsObject() Then
+        For Each candidate As String In mapping.Keys()
+            Dim parts As Array Of String = String.Split(candidate, "/")
+            Dim prefix As String = String.Left(candidate, String.Len(candidate) - String.Len(parts(parts.Count - 1)))
+            If String.StartsWith(physical, prefix) And String.Len(prefix) > best Then
+                Dim target As String = mapping.Value(candidate).AsString().Value
+                Dim targetParts As Array Of String = String.Split(target, "/")
+                Dim targetPrefix As String = String.Left(target, String.Len(target) - String.Len(targetParts(targetParts.Count - 1)))
+                logical = targetPrefix + String.Mid(physical, String.Len(prefix) + 1)
+                best = String.Len(prefix)
+            End If
+        Next
+    End If
+    Return logical
+End Function
+
+Function Main(args As Array Of String) As Integer
+    Try
+        If Array.Count(args) <> 2 Then Throw New InvalidArgumentException("usage: private-tests WORKSPACE_ROOT")
+        Dim root As New FileSystemItem(args(1))
+        Dim config As JSONItem = Json.Parse(ReadText(root.Child("workspace.json")))
+        Dim records As JSONItem = config.Value("repositories")
+        Dim old As JSONItem = JSONItem.NewObject()
+        Dim saved As FileSystemItem = root.Child("local/private-test-inventory.json")
+        If saved.IsFile() Then
+            Dim previous As JSONItem = Json.Parse(ReadText(saved)).Value("repositories")
+            For i As Integer = 0 To previous.Count() - 1
+                old.Value(previous.ValueAt(i).Value("name").AsString().Value) = previous.ValueAt(i)
+            Next
+        End If
+        Dim inventory As JSONItem = JSONItem.NewObject()
+        inventory.Value("schema") = 1
+        inventory.Value("purpose") = "Private local test ownership; excluded from public source assembly"
+        Dim privateRecords As JSONItem = JSONItem.NewArray()
+        Dim removed As Integer = 0
+        Dim total As Integer = 0
+        For i As Integer = 0 To records.Count()
+            Dim record As JSONItem
+            Dim rootScan As Boolean = i = records.Count()
+            If rootScan Then
+                record = JSONItem.NewObject()
+                record.Value("name") = "_workspace"
+                record.Value("path") = "."
+                record.Value("files") = JSONItem.NewArray()
+            Else
+                record = records.ValueAt(i)
+            End If
+            Dim name As String = record.Value("name").AsString().Value
+            Dim repo As FileSystemItem = root
+            If Not rootScan Then repo = root.Child(record.Value("path").AsString().Value)
+            IgnoreTests(repo)
+            Dim found As JSONItem = JSONItem.NewObject()
+            Dim privateMappings As JSONItem = JSONItem.NewObject()
+            If old.HasKey(name) And old.Value(name).Value("integrationPaths").IsObject() Then privateMappings = old.Value(name).Value("integrationPaths")
+            Dim publicFiles As JSONItem = JSONItem.NewArray()
+            Dim files As JSONItem = record.Value("files")
+            For j As Integer = 0 To files.Count() - 1
+                Dim relativePath As String = files.ValueAt(j).AsString().Value
+                If PrivatePath(relativePath) Then
+                    found.Value(relativePath) = True
+                    Dim sourceMappings As JSONItem = record.Value("integrationPaths")
+                    If sourceMappings.IsObject() And sourceMappings.HasKey(relativePath) Then privateMappings.Value(relativePath) = sourceMappings.Value(relativePath)
+                    removed += 1
+                Else
+                    publicFiles.Add(relativePath)
+                End If
+            Next
+            record.Value("files") = publicFiles
+            Dim publicMappings As JSONItem = JSONItem.NewObject()
+            Dim allMappings As JSONItem = record.Value("integrationPaths")
+            If allMappings.IsObject() Then
+                For j As Integer = 0 To publicFiles.Count() - 1
+                    Dim relativePath As String = publicFiles.ValueAt(j).AsString().Value
+                    If allMappings.HasKey(relativePath) Then publicMappings.Value(relativePath) = allMappings.Value(relativePath)
+                Next
+                record.Value("integrationPaths") = publicMappings
+            End If
+            If old.HasKey(name) Then
+                Dim previousFiles As JSONItem = old.Value(name).Value("files")
+                For j As Integer = 0 To previousFiles.Count() - 1
+                    Dim relativePath As String = previousFiles.ValueAt(j).AsString().Value
+                    If repo.Child(relativePath).IsFile() Then found.Value(relativePath) = True
+                Next
+            End If
+            FindTests(repo, "", found, rootScan)
+            Dim privateRecord As JSONItem = JSONItem.NewObject()
+            privateRecord.Value("name") = name
+            privateRecord.Value("path") = record.Value("path")
+            Dim privateFiles As JSONItem = JSONItem.NewArray()
+            For Each relativePath As String In found.Keys()
+                privateFiles.Add(relativePath)
+                total += 1
+            Next
+            privateRecord.Value("files") = privateFiles
+            Dim keptMappings As JSONItem = JSONItem.NewObject()
+            For Each relativePath As String In found.Keys()
+                If privateMappings.HasKey(relativePath) Then
+                    keptMappings.Value(relativePath) = privateMappings.Value(relativePath)
+                Else
+                    Dim logical As String = NewLogicalPath(record, repo, relativePath)
+                    If logical <> relativePath Then keptMappings.Value(relativePath) = logical
+                End If
+            Next
+            privateRecord.Value("integrationPaths") = keptMappings
+            privateRecords.Add(privateRecord)
+        Next
+        inventory.Value("repositories") = privateRecords
+        If Not root.Child("local").CreateFolder(True) Then Throw New IOException("Cannot create private inventory folder")
+        WriteJSON(saved, inventory)
+        WriteJSON(root.Child("workspace.json"), config)
+        Print "Removed " + String.From(removed) + " private test paths from public inventories; retained " + String.From(total) + " local test inputs."
+        Print "Ignore rules updated. Remove matching tracked paths from Git's index separately; files stay on disk."
+        Return 0
+    Catch error As Exception
+        StdErr.WriteLine(error.Message)
+        Return 1
+    End Try
+End Function

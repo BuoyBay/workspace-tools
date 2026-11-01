@@ -1,0 +1,3675 @@
+{
+    "schema": 1,
+    "organization": "BuoyBay",
+    "revisionMeaning": "local repository HEAD; verify remote reachability before installation",
+    "auditScope": "Source import scan and BPM metadata shape; not compiler, runtime, license completeness or remote publication verification",
+    "packages": [
+        {
+            "name": "agentkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/agentkit.git",
+                "rev": "98a0105dc11bea0fe189a1d977575e029a975cf6"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "agentsession",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/agentsession.git",
+                "rev": "a7526caa671c35817ce89ce84faab682e8d126b9"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {
+                    "agentkit": {
+                        "git": "https://github.com/BuoyBay/agentkit.git",
+                        "rev": "refs/heads/main"
+                    },
+                    "processkit": {
+                        "git": "https://github.com/BuoyBay/processkit.git",
+                        "rev": "refs/heads/main"
+                    },
+                    "projectkit": {
+                        "git": "https://github.com/BuoyBay/projectkit.git",
+                        "rev": "refs/heads/main"
+                    }
+                },
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [
+                    "agentkit",
+                    "processkit",
+                    "projectkit"
+                ],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "algorithmkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/algorithmkit.git",
+                "rev": "1b3550211c6f4d51fe1b8db06f13b28ee47fb9b0"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "appearance",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/appearance.git",
+                "rev": "ea9096dd64e334012aa8d75d4a21fe397c1bbab0"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "arrayutils",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/arrayutils.git",
+                "rev": "c7a5883fe8423050419162e5b926f155c76bde43"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "atomicfilekit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/atomicfilekit.git",
+                "rev": "202da89e451ce84f54f8a69872167c124be5cf9b"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "audiocuekit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/audiocuekit.git",
+                "rev": "3a95db3544114ab7aac6b1c52d48c6c44576be44"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_audiocuekit",
+                        "system": false,
+                        "minVersion": "0.1.0"
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "binarycursor",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/binarycursor.git",
+                "rev": "a2e5048af3b333a5731c6148793445a9d831e805"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "binarywriter",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/binarywriter.git",
+                "rev": "a11adb7d9eab87c5d36112e6edfaafdc444b0e39"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "bluetoothkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/bluetoothkit.git",
+                "rev": "eec7d03d95850835c533dc2f41c22185a149ca32"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "bookmarks",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/bookmarks.git",
+                "rev": "59ef91bd38b71b311bd8510212c5c73caf5a07e8"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "bufferkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/bufferkit.git",
+                "rev": "e8ba7cc115d2f36e7fa470cbc75b7f7d6d8c8279"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "buildkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/buildkit.git",
+                "rev": "373a4d0f376df2db8d7b8a4df3442a58977b5e6f"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "bundleinfo",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/bundleinfo.git",
+                "rev": "15351fcfa56f41280f5dca5b42a897c4998a21b4"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "chatgptauth",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/chatgptauth.git",
+                "rev": "666d4f94dec39019259a541dec6b6ca66862806a"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_chatgptauth",
+                        "system": false,
+                        "platforms": [
+                            "arm64-apple-macos",
+                            "x86_64-apple-macos",
+                            "x86_64-pc-windows-msvc",
+                            "x86_64-unknown-linux-gnu"
+                        ]
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "chatkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/chatkit.git",
+                "rev": "e1f085575a6b4e618d85793d54f68723c1755a39"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "clipboardkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/clipboardkit.git",
+                "rev": "b97d51b128de86ea370b5b878367ca422e0096ef"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "collectionskit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/collectionskit.git",
+                "rev": "47d2a9a3963707be5469c20326907c59e2688966"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "complexkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/complexkit.git",
+                "rev": "5eb6f8682e5b062f461b9f5eb690313c03aaba0a"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "compressionkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/compressionkit.git",
+                "rev": "37218bb7256def5c88827ec311362fb64894377b"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_compressionkit",
+                        "system": false,
+                        "minVersion": "0.1.0"
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "controlsnapshot",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/controlsnapshot.git",
+                "rev": "8a8380537a9c22f8d00bcee0622b1005f2bfe209"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "couchdb",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.3.0",
+            "expectedVersionTag": "v0.3.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/couchdb.git",
+                "rev": "45a4cc68c90e2fef41a886ee45485a6a4133848f"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "couchdb_curl",
+                        "system": true,
+                        "minVersion": "7.32.0"
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "cryptokit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/cryptokit.git",
+                "rev": "d902d88ce5e7ece5aa12233b244b9b1056aaf488"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "csvkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/csvkit.git",
+                "rev": "cee30840267f5e20519fff44e3957069c8365e3f"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "dataadapterskit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/dataadapterskit.git",
+                "rev": "7d0d57ae9acaed8074202ed0927952c70b36550e"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {
+                    "spreadsheetkit": {
+                        "git": "https://github.com/BuoyBay/spreadsheetkit.git",
+                        "rev": "refs/heads/main"
+                    },
+                    "jsonrows": {
+                        "git": "https://github.com/BuoyBay/jsonrows.git",
+                        "rev": "refs/heads/main"
+                    },
+                    "csvkit": {
+                        "git": "https://github.com/BuoyBay/csvkit.git",
+                        "rev": "refs/heads/main"
+                    }
+                },
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [
+                    "spreadsheetkit",
+                    "jsonrows",
+                    "csvkit"
+                ],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "dateparsekit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/dateparsekit.git",
+                "rev": "e004cf536c84a8605d1286438586a33d1f77ee8b"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "designerwidgets",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/designerwidgets.git",
+                "rev": "a8df442ee8ceda517bd1a8cdac7c08623daac25c"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {
+                    "layoutkit": {
+                        "git": "https://github.com/BuoyBay/layoutkit.git",
+                        "rev": "refs/heads/main"
+                    }
+                },
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [
+                    "layoutkit"
+                ],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "desktopevents",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/desktopevents.git",
+                "rev": "1d2687f17f955898b5726b9a0ac31123cc25fb56"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "desktopmenus",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/desktopmenus.git",
+                "rev": "626ecb32ffe9d2dad1687a6a311bd9c7252fcd21"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "diffkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/diffkit.git",
+                "rev": "52bfc017635e8613551afce4ad5d9b8b33635286"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "discoverykit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/discoverykit.git",
+                "rev": "3ff27b5232e9891b8428b93368259a3db2455268"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "diskspace",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/diskspace.git",
+                "rev": "66c921c773a8727e8d6e9eca7acec762505f4e60"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "dock",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/dock.git",
+                "rev": "d55bcf9c680bab80836cfb790f16b296e87d0b91"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "editorkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/editorkit.git",
+                "rev": "5992784ad083b3d1f17f9012f6ccb6d262f57d21"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "fftkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/fftkit.git",
+                "rev": "26f06d576ca00d4360356ceb73f507ad07457fac"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "fieldkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/fieldkit.git",
+                "rev": "cb2e11261634124788ee3ade98e77f72f0bb50b5"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {
+                    "maskkit": {
+                        "git": "https://github.com/BuoyBay/maskkit.git",
+                        "rev": "refs/heads/main"
+                    }
+                },
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [
+                    "maskkit"
+                ],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "filemetadata",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/filemetadata.git",
+                "rev": "40c302e96028acafc04a1e51b0373988917e58ee"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "filesystemkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/filesystemkit.git",
+                "rev": "a08d866205e594583c82c40753cebf8563800e85"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "filetypes",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/filetypes.git",
+                "rev": "86254910ed05e39a93206a48842265a5e6c5bc9a"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "fontcanvas",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/fontcanvas.git",
+                "rev": "b30fed93dad38b5e921fe205520c02a11ea56598"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_fontcanvas",
+                        "system": false,
+                        "minVersion": "0.1.0"
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "fontkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/fontkit.git",
+                "rev": "a89b2fc799eb40204b9f9eaf8a3fc9c60ebcff31"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_fontkit",
+                        "system": false,
+                        "minVersion": "0.1.0"
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "forgejokit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/forgejokit.git",
+                "rev": "e2f042cf808c0ee80398c9b30e0cc7ee8c4e02f1"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "formatcontrols",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/formatcontrols.git",
+                "rev": "e0f2bacc376b84e255d4bd928e8d742f60c11d62"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {
+                    "formatkit": {
+                        "git": "https://github.com/BuoyBay/formatkit.git",
+                        "rev": "refs/heads/main"
+                    },
+                    "temporalkit": {
+                        "git": "https://github.com/BuoyBay/temporalkit.git",
+                        "rev": "refs/heads/main"
+                    },
+                    "settingskit": {
+                        "git": "https://github.com/BuoyBay/settingskit.git",
+                        "rev": "refs/heads/main"
+                    },
+                    "fieldkit": {
+                        "git": "https://github.com/BuoyBay/fieldkit.git",
+                        "rev": "refs/heads/main"
+                    },
+                    "moneykit": {
+                        "git": "https://github.com/BuoyBay/moneykit.git",
+                        "rev": "refs/heads/main"
+                    },
+                    "maskkit": {
+                        "git": "https://github.com/BuoyBay/maskkit.git",
+                        "rev": "refs/heads/main"
+                    },
+                    "timezonekit": {
+                        "git": "https://github.com/BuoyBay/timezonekit.git",
+                        "rev": "refs/heads/main"
+                    }
+                },
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [
+                    "formatkit",
+                    "temporalkit",
+                    "settingskit",
+                    "fieldkit",
+                    "maskkit",
+                    "moneykit",
+                    "timezonekit"
+                ],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "formatkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/formatkit.git",
+                "rev": "145c88832e912a4faed6fbe2a63e5b9bc69eb64f"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {
+                    "moneykit": {
+                        "git": "https://github.com/BuoyBay/moneykit.git",
+                        "rev": "refs/heads/main"
+                    }
+                },
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [
+                    "moneykit"
+                ],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "formquerykit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/formquerykit.git",
+                "rev": "13df0072742268c1ff50d49c88fc2c9332ecd314"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "fuzzyfind",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/fuzzyfind.git",
+                "rev": "c41108b234118214a6ae74be6b7debcf25e5fda9"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "gameloopkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/gameloopkit.git",
+                "rev": "8fcd9c1ee98daa6d90e40f9c6e66892b31d5977b"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {
+                    "physicskit": {
+                        "git": "https://github.com/BuoyBay/physicskit.git",
+                        "rev": "refs/heads/main"
+                    },
+                    "spritekit": {
+                        "git": "https://github.com/BuoyBay/spritekit.git",
+                        "rev": "refs/heads/main"
+                    }
+                },
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [
+                    "physicskit",
+                    "spritekit"
+                ],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "githubkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/githubkit.git",
+                "rev": "7a0560bf686a6016ec7a9373956e96f0a9b36d6f"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "gitkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/gitkit.git",
+                "rev": "2ffa40cc855b23997bf45e7575ab2e757bf82d28"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_gitkit",
+                        "system": false
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "guilintkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/guilintkit.git",
+                "rev": "39ebce7d0912df59711f20f2e8139d6d06079ae5"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {
+                    "layoutkit": {
+                        "git": "https://github.com/BuoyBay/layoutkit.git",
+                        "rev": "refs/heads/main"
+                    },
+                    "editorkit": {
+                        "git": "https://github.com/BuoyBay/editorkit.git",
+                        "rev": "refs/heads/main"
+                    }
+                },
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [
+                    "layoutkit",
+                    "editorkit"
+                ],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "hexgridkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/hexgridkit.git",
+                "rev": "d7ba367d3160c2776a96dedcd404b99934bd35d5"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "httpkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/httpkit.git",
+                "rev": "c1fdd8c3f04d8dca059b000e64b18698605ec7b7"
+            },
+            "runtimeBlocker": "Requires explicitly built HTTPServer-1.1.0-httpkit.1 compatibility archive; see TOOLCHAIN-REQUIREMENTS.md",
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {
+                    "filesystemkit": {
+                        "git": "https://github.com/BuoyBay/filesystemkit.git",
+                        "rev": "refs/heads/main"
+                    }
+                },
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [
+                    "filesystemkit"
+                ],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "jsonrows",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/jsonrows.git",
+                "rev": "e5e0077e2c12f2f4f8b3b0adf2415b696a96d203"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "keychain",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/keychain.git",
+                "rev": "1622c546fb0c4af35dca67afca18592084de9906"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_security",
+                        "system": true
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "layoutcanvas",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/layoutcanvas.git",
+                "rev": "1a2d59f570d5aee5a5545b8c754c3034db27b543"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {
+                    "editorkit": {
+                        "git": "https://github.com/BuoyBay/editorkit.git",
+                        "rev": "refs/heads/main"
+                    },
+                    "layoutkit": {
+                        "git": "https://github.com/BuoyBay/layoutkit.git",
+                        "rev": "refs/heads/main"
+                    },
+                    "controlsnapshot": {
+                        "git": "https://github.com/BuoyBay/controlsnapshot.git",
+                        "rev": "refs/heads/main"
+                    }
+                },
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [
+                    "editorkit",
+                    "layoutkit",
+                    "controlsnapshot"
+                ],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "layoutkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/layoutkit.git",
+                "rev": "b39a58731555da466e08f7803d66af92c3f3d985"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {
+                    "editorkit": {
+                        "git": "https://github.com/BuoyBay/editorkit.git",
+                        "rev": "refs/heads/main"
+                    }
+                },
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [
+                    "editorkit"
+                ],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "linearkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/linearkit.git",
+                "rev": "ca6970e9cb4449b8e19e738ec00b9e7b25a9a732"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "localekit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/localekit.git",
+                "rev": "0e69c8c0d81d6e2844ef939405fe151372da9afa"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "loginitems",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/loginitems.git",
+                "rev": "37acd57eec86a6b976148262145b5662e53058a3"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "logkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/logkit.git",
+                "rev": "c97d02f0c59eaf90bdb9fba4ad1582b42139a00f"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "lspkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/lspkit.git",
+                "rev": "ee379101df821f7e3d0e59d3635b5b482778e96a"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "mailkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/mailkit.git",
+                "rev": "52bd30bee501570da8196029be2cea9ea4ac4045"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "maskkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/maskkit.git",
+                "rev": "356cb6056080693433c559f2162d620ec061e52d"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "mathkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/mathkit.git",
+                "rev": "9b2ef1791f51e1941b94167dcb5d8982b9e89551"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "modelkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/modelkit.git",
+                "rev": "3d3a90e74eb02c958bd24fb0715aeaa3a10e20b1"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "moneykit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/moneykit.git",
+                "rev": "660ae3223fc35781ff91e530ee213098c3efd481"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "networkinfo",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/networkinfo.git",
+                "rev": "f48339d7a0e5d1392fe6263492d2b1785c11cf74"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "normalizationkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/normalizationkit.git",
+                "rev": "1b56698749d2588ff3dc0e857a3d2b2c288edd12"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "notifications",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/notifications.git",
+                "rev": "26da058280987b2bbcfbe9326b0febfd5012c9aa"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_notifications",
+                        "system": false
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "odbckit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/odbckit.git",
+                "rev": "cd9e8d6c99658085783f3cddb045aa9d88274c7e"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_odbckit",
+                        "system": false,
+                        "minVersion": "0.1.0"
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "optionkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/optionkit.git",
+                "rev": "8d5f6d1700dfe038586ae3efaa7f140bdf10cdc1"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "pdfkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/pdfkit.git",
+                "rev": "32255465938f6b9cfa4bd9f4c60e9638ca810a50"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "permissionkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/permissionkit.git",
+                "rev": "f3e43eb06c6643fdf44542107b7113906dcb74ff"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "permissions_security",
+                        "system": true
+                    },
+                    {
+                        "libName": "permissions_accessibility",
+                        "system": true
+                    },
+                    {
+                        "libName": "permissions_events",
+                        "system": true
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "pgsql",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/pgsql.git",
+                "rev": "5a13cb78a454a7b554808a77c6084c3b20a641ca"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "pq",
+                        "system": false,
+                        "minVersion": "18.0.0"
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "physicskit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/physicskit.git",
+                "rev": "aa9c5ab41b9f49e00f8f5acb5927889163307acc"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "plistkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/plistkit.git",
+                "rev": "79464d34272a698222374a0b52adcf028c1f660c"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "plotkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/plotkit.git",
+                "rev": "a6657837edbebaa30b1c584450b96ddef1f112ef"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "poweractivity",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/poweractivity.git",
+                "rev": "dad206a3aa2e070c4f39a6e0f3f484bf2a78a577"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_poweractivity",
+                        "system": false
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "previewkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/previewkit.git",
+                "rev": "9b938996fe4e168899c311afd572ac1cf5cf3bfc"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "printing",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/printing.git",
+                "rev": "11d4467c3c5a8cd330846202d64d15842d147754"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "priorityqueuekit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/priorityqueuekit.git",
+                "rev": "057b106e99fe591e1c2cc7ca9a8d4e21c32cbd30"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "processkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/processkit.git",
+                "rev": "b9012c8b588c701747d8eb72934ff5342fc758fe"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_processkit",
+                        "system": false,
+                        "minVersion": "0.1.0"
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "progresskit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/progresskit.git",
+                "rev": "61b830a5474a9efb23df30e0c3970ed6243dcb6f"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "projectkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/projectkit.git",
+                "rev": "7f7d17eb73be90cdc4f067236b220c86b5e5ef6b"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {
+                    "editorkit": {
+                        "git": "https://github.com/BuoyBay/editorkit.git",
+                        "rev": "refs/heads/main"
+                    }
+                },
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [
+                    "editorkit"
+                ],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "quicklook",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/quicklook.git",
+                "rev": "592671ca8b345ca099a9d660bd0163516d09e3e8"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_quicklookui",
+                        "system": true
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "randomkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/randomkit.git",
+                "rev": "23a63f20ef8c9e5ba06e071d40fbbdf02d735942"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "rbclassic",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/rbclassic.git",
+                "rev": "4696387b7d8e192be89ffffa54fab933550cd6e2"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {
+                    "processkit": {
+                        "git": "https://github.com/BuoyBay/processkit.git",
+                        "rev": "refs/heads/main"
+                    }
+                },
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [
+                    "processkit"
+                ],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "rediskit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/rediskit.git",
+                "rev": "03dfd1e938f96f67090a746ccc4aaa5dcda2a52e"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "resourcekit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/resourcekit.git",
+                "rev": "87f5913d850de14b99d0124ccaa5b168149e7023"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "richtext",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/richtext.git",
+                "rev": "c54f76f4ed19d665297944d1e6f033ef05163e1d"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "scene3dkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/scene3dkit.git",
+                "rev": "9eb42aa90089cb44635a343c8e22d6ddb3fb7e87"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_scene3dkit",
+                        "system": false,
+                        "minVersion": "0.1.0"
+                    },
+                    {
+                        "libName": "buoy_scene3dimages",
+                        "system": false,
+                        "minVersion": "0.1.0"
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "scraping",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/scraping.git",
+                "rev": "208895a1d0271825afa0611cce58f97c36a9a9ea"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "secretstore",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/secretstore.git",
+                "rev": "337e5eda5731f8ca99914d6496b31dfa1c3cdb73"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {
+                    "keychain": {
+                        "git": "https://github.com/BuoyBay/keychain.git",
+                        "rev": "refs/heads/main"
+                    }
+                },
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [
+                    "keychain"
+                ],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "settingskit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/settingskit.git",
+                "rev": "fa5ad9c168beb73c922accc52999a3acfe23ce5d"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {
+                    "atomicfilekit": {
+                        "git": "https://github.com/BuoyBay/atomicfilekit.git",
+                        "rev": "refs/heads/main"
+                    }
+                },
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [
+                    "atomicfilekit"
+                ],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "shapingkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/shapingkit.git",
+                "rev": "bf7019ec30da8622806734c0c2b76de8d07a797b"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_shapingkit",
+                        "system": false,
+                        "minVersion": "0.1.0"
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "sharing",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/sharing.git",
+                "rev": "1b48b42534fc6126f693378f919f0f9578c7ed70"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "sound",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/sound.git",
+                "rev": "276458c0aae711fd04705e3de362db1959e242f0"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "speech",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/speech.git",
+                "rev": "4a964ffd60597b1fb5856e6e51e5d0e34e078faa"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "spellcheck",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/spellcheck.git",
+                "rev": "c3c5bbb414fa630ebb2684c5986710d2c543bba0"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "spreadsheetkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/spreadsheetkit.git",
+                "rev": "90d7790bf28b241de3bad087460e39913456e337"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "spritekit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/spritekit.git",
+                "rev": "729f33011ecd33c558f2263c67234743e5c3f410"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "sqlbuilderkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/sqlbuilderkit.git",
+                "rev": "65400484265e8918a056656a2ec3f3c51fa38d9c"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "starterkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/starterkit.git",
+                "rev": "c68758d7b5f5afcc8ed7b1fbfbf5ad4116c40900"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "statskit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/statskit.git",
+                "rev": "7375e8627de451ba31e156744de2405c5382f83e"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "statusbar",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/statusbar.git",
+                "rev": "88ed9ecd3efbdd89ec9a6d4f962a2eb1d85f26bb"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "stringquerykit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/stringquerykit.git",
+                "rev": "8034fa17815524e692ddec4f23a36b0c9a327cf1"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "stringutils",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/stringutils.git",
+                "rev": "99fcbf045c7029df5a7e883b4d9d219ac4da8961"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "styledtext",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/styledtext.git",
+                "rev": "261ebe9b3db500eeadcc120e8638c1033e4f5442"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "styledtextui",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/styledtextui.git",
+                "rev": "d402b95394666ca7049f5a9ff28b462af26f78d9"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {
+                    "styledtext": {
+                        "git": "https://github.com/BuoyBay/styledtext.git",
+                        "rev": "refs/heads/main"
+                    }
+                },
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [
+                    "styledtext"
+                ],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "systeminfo",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/systeminfo.git",
+                "rev": "3815cefc211de0524fc70dbfc85edb81c104cef7"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "temporalkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/temporalkit.git",
+                "rev": "08d6728eeb095b8eb7d170f5fc6aacae9a493ad2"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {
+                    "dateparsekit": {
+                        "git": "https://github.com/BuoyBay/dateparsekit.git",
+                        "rev": "refs/heads/main"
+                    },
+                    "timezonekit": {
+                        "git": "https://github.com/BuoyBay/timezonekit.git",
+                        "rev": "refs/heads/main"
+                    }
+                },
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [
+                    "dateparsekit",
+                    "timezonekit"
+                ],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "terminalkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/terminalkit.git",
+                "rev": "df9de28bd7004799414ad4ced28ed3653654d08b"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_terminalkit",
+                        "system": false,
+                        "minVersion": "0.1.0"
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "testkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/testkit.git",
+                "rev": "d8a3a6bea52712a5dc4534d7eb13e75c06d44ab2"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "textmetrics",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/textmetrics.git",
+                "rev": "917062bf35fc22ed9afaf95504aec9f53199e144"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_textmetrics",
+                        "system": false,
+                        "minVersion": "0.1.0"
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "thinkgearkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/thinkgearkit.git",
+                "rev": "511fd7e54fb9129d49d7f6b2bccf22f38b00c77a"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_thinkgearkit",
+                        "system": false,
+                        "minVersion": "0.1.0"
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "timezonekit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/timezonekit.git",
+                "rev": "72a8db9ea6667abdcbd1b107c563c55d64d6babf"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "treesitter",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/treesitter.git",
+                "rev": "e49ec5fed5707b2b7ea66f3f95a1bbe398263632"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_treesitter",
+                        "system": false,
+                        "minVersion": "0.1.0"
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "updatekit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/updatekit.git",
+                "rev": "45c534c2aa58c301b707064dbf2ef1d18ff3a819"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": [
+                    {
+                        "libName": "buoy_updatekit",
+                        "system": false,
+                        "minVersion": "0.1.0"
+                    }
+                ],
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "urikit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/urikit.git",
+                "rev": "6035e04d5fc0b1b2aa679fb809ac4824f26ab75f"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "usbkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/usbkit.git",
+                "rev": "7f9872819c07de84394e0d224817ad5015201578"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "uuidkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/uuidkit.git",
+                "rev": "ffde27944a2162018d21a7da908effd3dcec1ce9"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "variantkit",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/variantkit.git",
+                "rev": "06497cf4637e81acce40b89d0f8b00fc9e17a020"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {
+                    "collectionskit": {
+                        "git": "https://github.com/BuoyBay/collectionskit.git",
+                        "rev": "refs/heads/main"
+                    }
+                },
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [
+                    "collectionskit"
+                ],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        },
+        {
+            "name": "workspace",
+            "license": "MIT OR Apache-2.0",
+            "manifestVersion": "0.1.0",
+            "expectedVersionTag": "v0.1.0",
+            "source": {
+                "git": "https://github.com/BuoyBay/workspace.git",
+                "rev": "934842133c9b24c61378b2a9665d72ac509680bb"
+            },
+            "audit": {
+                "hasBpmManifest": true,
+                "declaredDependencies": {},
+                "nonObjectDependencySources": [],
+                "localDependencySourcesRejectedForGit": [],
+                "inferredPackageImports": [],
+                "importsWithoutDependencyMetadata": [],
+                "nativeLibraries": null,
+                "packageLocalLicenseFiles": [
+                    "LICENSE",
+                    "LICENSE-MIT.txt",
+                    "LICENSE-APACHE.txt",
+                    "LICENSE-DOCS.txt",
+                    "NOTICE.md",
+                    "LICENSING.md"
+                ]
+            }
+        }
+    ]
+}

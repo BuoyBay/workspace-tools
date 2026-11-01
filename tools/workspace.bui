@@ -1,0 +1,250 @@
+' Native public workspace inventory and integration assembly. No shell or Python.
+
+Private Function ReadJSON(file As FileSystemItem) As JSONItem
+    Dim content As Result Of String, String = file.ReadAllText()
+    If content.IsErr Then Throw New IOException("Cannot read " + file.FullPath() + ": " + content.Error)
+    Return Json.Parse(content.Value)
+End Function
+
+Private Function RequiredString(item As JSONItem, key As String) As String
+    Dim value As JSONItem = item.Value(key)
+    If Not value.IsString() Then Throw New InvalidArgumentException("Expected string: " + key)
+    Return value.AsString().Value
+End Function
+
+Private Sub CheckRelative(value As String)
+    If value = "" Then Throw New InvalidArgumentException("Empty inventory path")
+    If String.Contains(value, "\\") Or String.Contains(value, ":") Then Throw New InvalidArgumentException("Nonportable inventory path: " + value)
+    For Each part As String In String.Split(value, "/")
+        If part = "" Or part = "." Or part = ".." Or part = ".git" Then Throw New InvalidArgumentException("Unsafe inventory path: " + value)
+    Next
+End Sub
+
+Private Function WorkspaceRoot(args As Array Of String) As FileSystemItem
+    If Array.Count(args) = 4 Then
+        If args(2) <> "--root" Then Throw New InvalidArgumentException("Expected --root PATH")
+        Return New FileSystemItem(args(3))
+    End If
+    If Array.Count(args) <> 2 Then Throw New InvalidArgumentException("usage: buoybay list|verify|assemble|list-private|verify-private|assemble-private [--root PATH]")
+    Dim folder As New FileSystemItem(FileSystemItem.ExecutableDirectory())
+    While folder <> Nil
+        If folder.Child("workspace.json").IsFile() Then Return folder
+        folder = folder.Parent
+    End While
+    Throw New InvalidArgumentException("workspace.json not found above executable; pass --root PATH")
+End Function
+
+Private Function PubliclyListed(record As JSONItem) As Boolean
+    Dim policy As JSONItem = record.Value("publication")
+    If Not policy.IsObject() Then Return True
+    If policy.Value("visibility").AsString().Or("") = "private" Then Return False
+    If policy.Value("hold").AsString().Or("") <> "" Then Return False
+    Return policy.Value("listed").AsBoolean().Or(True)
+End Function
+
+Private Function Records(root As FileSystemItem, includePrivate As Boolean) As JSONItem
+    Dim config As JSONItem = ReadJSON(root.Child("workspace.json"))
+    Dim repos As JSONItem = config.Value("repositories")
+    If Not repos.IsArray() Then Throw New InvalidArgumentException("repositories must be an array")
+    If includePrivate Then Return repos
+    Dim selected As JSONItem = JSONItem.NewArray()
+    For i As Integer = 0 To repos.Count() - 1
+        If PubliclyListed(repos.ValueAt(i)) Then selected.Add(repos.ValueAt(i))
+    Next
+    Return selected
+End Function
+
+Private Function VerifyPrivateInputs(root As FileSystemItem, repos As JSONItem) As Integer
+    Dim owners As New Map Of String, Boolean()
+    For i As Integer = 0 To repos.Count() - 1
+        Dim record As JSONItem = repos.ValueAt(i)
+        Dim files As JSONItem = record.Value("files")
+        For j As Integer = 0 To files.Count() - 1
+            owners.Set(IntegrationPath(record, files.ValueAt(j).AsString().Value), True)
+        Next
+    Next
+    Dim count As Integer = 0
+    For Each filename As String In ["local/private-test-inventory.json", "local/private-tooling-inventory.json"]
+        Dim inventory As FileSystemItem = root.Child(filename)
+        If Not inventory.IsFile() Then Continue For
+        Dim records As JSONItem = ReadJSON(inventory).Value("repositories")
+        For i As Integer = 0 To records.Count() - 1
+            Dim record As JSONItem = records.ValueAt(i)
+            Dim directory As String = RequiredString(record, "path")
+            Dim repo As FileSystemItem = root
+            If directory <> "." Then
+                CheckRelative(directory)
+                repo = root.Child(directory)
+            End If
+            Dim files As JSONItem = record.Value("files")
+            For j As Integer = 0 To files.Count() - 1
+                Dim physical As String = files.ValueAt(j).AsString().Value
+                Dim logical As String = IntegrationPath(record, physical)
+                CheckRelative(physical)
+                CheckRelative(logical)
+                If owners.ContainsKey(logical) Then Throw New InvalidArgumentException("Private input ownership conflict: " + logical)
+                If Not repo.Child(physical).IsFile() Then Throw New IOException("Missing private input: " + directory + "/" + physical)
+                owners.Set(logical, True)
+                count += 1
+            Next
+        Next
+    Next
+    Return count
+End Function
+
+Private Function IntegrationPath(record As JSONItem, physical As String) As String
+    Dim mapping As JSONItem = record.Value("integrationPaths")
+    If mapping.IsObject() And mapping.HasKey(physical) Then Return RequiredString(mapping, physical)
+    Return physical
+End Function
+
+Private Function Verify(root As FileSystemItem, repos As JSONItem) As Integer
+    Dim owners As New Map Of String, String()
+    Dim names As New Map Of String, Boolean()
+    Dim directories As New Map Of String, Boolean()
+    For i As Integer = 0 To repos.Count() - 1
+        Dim record As JSONItem = repos.ValueAt(i)
+        Dim name As String = RequiredString(record, "name")
+        Dim directory As String = RequiredString(record, "path")
+        CheckRelative(directory)
+        If names.ContainsKey(name) Then Throw New InvalidArgumentException("Duplicate repository: " + name)
+        If directories.ContainsKey(directory) Then Throw New InvalidArgumentException("Duplicate repository path: " + directory)
+        names.Set(name, True)
+        directories.Set(directory, True)
+        Dim repo As FileSystemItem = root.Child(directory)
+        Dim git As FileSystemItem = repo.Child(".git")
+        If Not git.IsFolder() And Not git.IsFile() Then Throw New IOException("Missing Git repository: " + repo.FullPath())
+        Dim files As JSONItem = record.Value("files")
+        If Not files.IsArray() Then Throw New InvalidArgumentException("Invalid source inventory: " + name)
+        For j As Integer = 0 To files.Count() - 1
+            Dim entry As JSONItem = files.ValueAt(j)
+            If Not entry.IsString() Then Throw New InvalidArgumentException("Inventory path must be a string: " + name)
+            Dim relative As String = entry.AsString().Value
+            CheckRelative(relative)
+            Dim logical As String = IntegrationPath(record, relative)
+            CheckRelative(logical)
+            If owners.ContainsKey(logical) Then Throw New InvalidArgumentException("Duplicate integration source ownership: " + logical)
+            owners.Set(logical, name)
+            If String.StartsWith(logical, "apps/") Then
+                If Not String.StartsWith(logical, "apps/BuoyStudio/") And Not String.StartsWith(logical, "apps/shared/") Then Throw New InvalidArgumentException("Excluded app source: " + logical)
+            End If
+            If Not repo.Child(relative).IsFile() Then Throw New IOException("Missing source: " + name + "/" + relative)
+        Next
+    Next
+    Return owners.Count()
+End Function
+
+Private Sub CopyInput(source As FileSystemItem, destination As FileSystemItem)
+    If Not destination.Parent.CreateFolder(True) Then Throw New IOException("Cannot create " + destination.ParentPath())
+    If Not source.CopyTo(destination) Then Throw New IOException("Cannot copy " + source.FullPath())
+    #If Not TargetWindows Then
+        destination.Permissions.Mode = source.Permissions.Mode And &o777
+    #End If
+End Sub
+
+Private Function OverlayPrivate(root As FileSystemItem, staged As FileSystemItem, inventory As FileSystemItem) As Integer
+    If Not inventory.IsFile() Then Return 0
+    Dim records As JSONItem = ReadJSON(inventory).Value("repositories")
+    If Not records.IsArray() Then Throw New InvalidArgumentException("Invalid private input inventory")
+    Dim count As Integer = 0
+    For i As Integer = 0 To records.Count() - 1
+        Dim record As JSONItem = records.ValueAt(i)
+        Dim directory As String = RequiredString(record, "path")
+        Dim repo As FileSystemItem = root
+        If directory <> "." Then
+            CheckRelative(directory)
+            repo = root.Child(directory)
+        End If
+        Dim files As JSONItem = record.Value("files")
+        For j As Integer = 0 To files.Count() - 1
+            Dim physical As String = files.ValueAt(j).AsString().Value
+            Dim logical As String = IntegrationPath(record, physical)
+            CheckRelative(physical)
+            CheckRelative(logical)
+            If staged.Child(logical).Exists() Then Throw New InvalidArgumentException("Private input overlay conflicts with existing input: " + logical)
+            CopyInput(repo.Child(physical), staged.Child(logical))
+            count += 1
+        Next
+    Next
+    Return count
+End Function
+
+Private Sub Assemble(root As FileSystemItem, repos As JSONItem, count As Integer, withPrivate As Boolean)
+    Dim local As FileSystemItem = root.Child("local")
+    If Not local.CreateFolder(True) Then Throw New IOException("Cannot create local directory")
+    Dim staged As FileSystemItem = local.Child("integration.staging")
+    Dim previous As FileSystemItem = local.Child("integration.previous")
+    Dim target As FileSystemItem = local.Child("integration")
+    If staged.Exists() Or previous.Exists() Then Throw New IOException("Previous assembly staging/backup exists; inspect local/integration.staging and local/integration.previous first")
+    If Not staged.CreateFolder() Then Throw New IOException("Cannot create integration staging")
+    For i As Integer = 0 To repos.Count() - 1
+        Dim record As JSONItem = repos.ValueAt(i)
+        Dim repo As FileSystemItem = root.Child(RequiredString(record, "path"))
+        Dim files As JSONItem = record.Value("files")
+        For j As Integer = 0 To files.Count() - 1
+            Dim relative As String = files.ValueAt(j).AsString().Value
+            CopyInput(repo.Child(relative), staged.Child(IntegrationPath(record, relative)))
+        Next
+    Next
+    Dim privateCount As Integer = 0
+    If withPrivate Then
+        privateCount = OverlayPrivate(root, staged, root.Child("local/private-test-inventory.json"))
+        privateCount += OverlayPrivate(root, staged, root.Child("local/private-tooling-inventory.json"))
+    End If
+    If root.Child("buoy-llms.txt").IsFile() Then CopyInput(root.Child("buoy-llms.txt"), staged.Child("buoy-llms.txt"))
+    Dim docs As FileSystemItem = local.Child("documentation-upstream.json")
+    If docs.IsFile() Then CopyInput(docs, staged.Child("apps/BuoyDocs/snapshot/docs.json"))
+    Dim hadTarget As Boolean = target.Exists()
+    If hadTarget Then
+        If Not target.MoveTo(previous) Then Throw New IOException("Cannot move previous integration aside")
+    End If
+    Dim published As FileSystemItem = local.Child("integration")
+    If Not staged.MoveTo(published) Then
+        If hadTarget Then previous.MoveTo(published)
+        Throw New IOException("Cannot publish integration staging")
+    End If
+    If hadTarget Then
+        If Not previous.Delete(True) Then Throw New IOException("Assembly succeeded; old integration cleanup failed: " + previous.FullPath())
+    End If
+    Print "Assembled " + String.From(count) + " source inputs in " + published.FullPath()
+    If withPrivate Then Print "Included " + String.From(privateCount) + " private local test/tooling inputs."
+End Sub
+
+Function Main(args As Array Of String) As Integer
+    Try
+        If Array.Count(args) = 2 Then
+            If args(1) = "--help" Or args(1) = "help" Then
+                Print "usage: buoybay list|verify|assemble|list-private|verify-private|assemble-private [--root PATH]"
+                Print "Compile: buoy tools/workspace.bui -o dist/buoybay"
+                Print "Run Git status/clone directly in each owning repository."
+                Return 0
+            End If
+        End If
+        Dim root As FileSystemItem = WorkspaceRoot(args)
+        Dim includePrivate As Boolean = String.EndsWith(args(1), "-private")
+        Dim repos As JSONItem = Records(root, includePrivate)
+        Select Case args(1)
+            Case "list", "list-private"
+                For i As Integer = 0 To repos.Count() - 1
+                    Dim record As JSONItem = repos.ValueAt(i)
+                    Print RequiredString(record, "name") + "\t" + RequiredString(record, "license")
+                Next
+            Case "verify", "verify-private", "assemble", "assemble-private"
+                Dim count As Integer = Verify(root, repos)
+                Dim privateCount As Integer = 0
+                If includePrivate Then privateCount = VerifyPrivateInputs(root, repos)
+                If args(1) = "assemble" Or args(1) = "assemble-private" Then
+                    Assemble(root, repos, count, args(1) = "assemble-private")
+                Else
+                    Print "Verified " + String.From(repos.Count()) + " repositories, " + String.From(count) + " current source inputs, ownership inventories, and public app boundary."
+                    If includePrivate Then Print "Verified " + String.From(privateCount) + " optional private local test/tooling inputs."
+                End If
+            Case Else
+                Throw New InvalidArgumentException("Unknown command; use list, verify, assemble, list-private, verify-private, or assemble-private")
+        End Select
+        Return 0
+    Catch error As Exception
+        StdErr.WriteLine(error.Message)
+        Return 1
+    End Try
+End Function

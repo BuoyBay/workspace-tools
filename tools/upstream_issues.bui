@@ -1,0 +1,594 @@
+Import crypto
+
+' Local issue preparation only. This executable never starts another process.
+#If TargetWindows Then
+Declare Function OpenPath Lib "kernel32" Alias "CreateFileW" (name As Ptr, access As UInt32, sharing As UInt32, security As Ptr, creation As UInt32, attributes As UInt32, template As Integer) As Integer
+Declare Function FinalPath Lib "kernel32" Alias "GetFinalPathNameByHandleW" (handle As Integer, buffer As Ptr, capacity As UInt32, openFlags As UInt32) As UInt32
+Declare Function ClosePath Lib "kernel32" Alias "CloseHandle" (handle As Integer) As Int32
+Declare Function ReplacePath Lib "kernel32" Alias "MoveFileExW" (source As Ptr, destination As Ptr, openFlags As UInt32) As Int32
+Declare Function ClaimDirectory Lib "kernel32" Alias "CreateDirectoryW" (name As Ptr, security As Ptr) As Int32
+#Else
+Declare Function ResolvePath Lib "c" Alias "realpath" (name As String, buffer As Ptr) As CString
+Declare Function ReadLink Lib "c" Alias "readlink" (name As String, buffer As Ptr, capacity As UInt64) As Integer
+Declare Function ReplacePath Lib "c" Alias "rename" (source As String, destination As String) As Int32
+Declare Function ClaimDirectory Lib "c" Alias "mkdir" (name As String, mode As UInt32) As Int32
+#End If
+
+Sub Need(passed As Boolean, message As String)
+    If Not passed Then Throw New InvalidArgumentException(message)
+End Sub
+
+Function Wide(value As String) As Bytes
+    Dim data As Bytes = Bytes.FromString(value, Text.Encodings.UTF16LE)
+    data.Append(0)
+    data.Append(0)
+    Return data
+End Function
+
+Function Canonical(pathname As String, depth As Integer = 0) As String
+    Need(depth < 64, "path resolution nesting limit exceeded")
+    #If TargetWindows Then
+        Dim name As Bytes = Wide(pathname)
+        Dim handle As Integer = OpenPath(name.DataPtr(), 0, 7, Nil, 3, 33554432, 0)
+        Need(handle <> -1, "cannot resolve path: " + pathname)
+        Try
+            Dim buffer As New Bytes(65536)
+            Dim count As Integer = FinalPath(handle, buffer.DataPtr(), 32768, 0)
+            Need(count > 0 And count < 32768, "cannot resolve final path: " + pathname)
+            Dim wideBytes As New Bytes()
+            wideBytes.Append(buffer.DataPtr(), count * 2)
+            Dim resolved As String = String.Replace(wideBytes.ToString(Text.Encodings.UTF16LE), "\\", "/")
+            If String.StartsWith(resolved, "//?/UNC/", True) Then resolved = "//" + String.Substring(resolved, 8)
+            If String.StartsWith(resolved, "//?/", True) Then resolved = String.Substring(resolved, 4)
+            Return resolved
+        Finally
+            ClosePath(handle)
+        End Try
+    #Else
+        Dim buffer As New Bytes(32768)
+        Dim resolved As CString = ResolvePath(pathname, buffer.DataPtr())
+        If resolved <> Nil Then Return CType(resolved, String)
+        Dim file As New FileSystemItem(pathname)
+        Need(file.Parent <> Nil And file.ParentPath() <> pathname, "cannot resolve path: " + pathname)
+        Dim count As Integer = ReadLink(pathname, buffer.DataPtr(), 32768)
+        If count >= 0 Then
+            Need(count < 32768, "symlink target exceeds path limit")
+            Dim targetBytes As New Bytes()
+            targetBytes.Append(buffer.DataPtr(), count)
+            Dim target As String = targetBytes.ToString(Text.Encodings.UTF8)
+            If Not String.StartsWith(target, "/", True) Then target = Path.Join(file.ParentPath(), target)
+            Return Canonical(target, depth + 1)
+        End If
+        Dim parent As String = Canonical(file.ParentPath(), depth + 1)
+        If file.Name() = "." Then Return parent
+        If file.Name() = ".." Then
+            Dim parentFolder As New FileSystemItem(parent)
+            Return parentFolder.ParentPath()
+        End If
+        Return Path.Join(parent, file.Name())
+    #End If
+End Function
+
+Function Inside(pathname As String, root As String) As String
+    Dim resolved As String = Canonical(pathname)
+    Dim boundary As String = Canonical(root)
+    Dim comparable As String = resolved
+    #If TargetWindows Then
+        boundary = String.LCase(boundary)
+        comparable = String.LCase(comparable)
+    #End If
+    Dim prefix As String = boundary
+    If Not String.EndsWith(prefix, "/", True) Then prefix += "/"
+    Need(String.Compare(comparable, boundary, True) = 0 Or String.StartsWith(comparable, prefix, True), "Path escapes workspace: " + pathname)
+    Return resolved
+End Function
+
+Function RelativeInside(folder As String, relative As String, root As String) As String
+    Need(relative <> "", "empty evidence path")
+    Dim pathnameValue As String = Path.Join(folder, relative)
+    If String.StartsWith(relative, "/", True) Then pathnameValue = relative
+    #If TargetWindows Then
+        If String.Contains(relative, ":", True) Then pathnameValue = relative
+    #End If
+    Return Inside(pathnameValue, root)
+End Function
+
+Function ReadText(pathname As String) As String
+    Dim file As New FileSystemItem(pathname)
+    Need(file.IsFile(), "not a regular file: " + pathname)
+    Need(file.Length() <= 134217728, "file exceeds 128 MiB: " + pathname)
+    Dim readback As Result Of String, String = file.ReadAllText()
+    Need(readback.IsOk, "cannot read " + pathname)
+    Return readback.Value
+End Function
+
+Sub WriteText(pathname As String, body As String)
+    Dim file As New FileSystemItem(pathname)
+    Dim written As Result Of Integer, String = file.WriteAllText(body)
+    Need(written.IsOk, "cannot write " + pathname)
+End Sub
+
+Function ReadJSON(pathname As String) As JSONItem
+    Return Json.Parse(ReadText(pathname))
+End Function
+
+Function Text(item As JSONItem, key As String) As String
+    Dim value As JSONItem = item.Value(key)
+    If Not value.IsString() Then Return ""
+    Return value.AsString().Value
+End Function
+
+Function Nonempty(item As JSONItem) As Boolean
+    If item.IsNull() Then Return False
+    If item.IsBoolean() Then Return item.AsBoolean().Value
+    If item.IsNumber() Then Return item.AsNumber().Value <> 0
+    If item.IsString() Then Return item.AsString().Value <> ""
+    Return item.Count() > 0
+End Function
+
+Function TrueBoolean(item As JSONItem) As Boolean
+    Return item.IsBoolean() And item.AsBoolean().Or(False)
+End Function
+
+Function Exact(left As String, right As String) As Boolean
+    Return String.Compare(left, right, True) = 0
+End Function
+
+Function Has(items As Array Of String, value As String) As Boolean
+    For Each entry As String In items
+        If String.Compare(entry, value, True) = 0 Then Return True
+    Next
+    Return False
+End Function
+
+Function Status(value As String) As Boolean
+    Return Has(["draft", "validated", "ready", "submitted", "duplicate", "not-reproduced"], value)
+End Function
+
+Function Digest(pathname As String) As String
+    Dim opened As Result Of BinaryStream, IOError = BinaryStream.Open(New FileSystemItem(pathname), False)
+    Need(opened.IsOk, "cannot hash " + pathname)
+    Dim stream As BinaryStream = opened.Value
+    Try
+        Need(stream.Length <= 134217728, "repro/body exceeds 128 MiB")
+        Return Crypto.Hash(Crypto.HashAlgorithms.SHA256, stream.Read(stream.Length)).ToHex()
+    Finally
+        stream.Close()
+    End Try
+End Function
+
+' JSONItem stores numbers as Double. Retain the original integer-token check
+' for schema and exitCode fields, rejecting booleans, decimals and exponents.
+Function IntegerTokens(source As String, key As String) As Boolean
+    Dim index As Integer = 0
+    While index < String.Len(source)
+        If String.Substring(source, index, 1) <> "\"" Then
+            index += 1
+            Continue While
+        End If
+        Dim first As Integer = index
+        index += 1
+        While index < String.Len(source)
+            Dim ch As String = String.Substring(source, index, 1)
+            index += 1
+            If ch = "\\" Then
+                index += 1
+            ElseIf ch = "\"" Then
+                Exit While
+            End If
+        End While
+        Dim token As JSONItem = Json.Parse(String.Substring(source, first, index - first))
+        Dim position As Integer = index
+        While position < String.Len(source) And String.Contains(" \r\n\t", String.Substring(source, position, 1), True)
+            position += 1
+        End While
+        If position >= String.Len(source) Then Exit While
+        If Not Exact(token.AsString().Value, key) Or String.Substring(source, position, 1) <> ":" Then Continue While
+        position += 1
+        While position < String.Len(source) And String.Contains(" \r\n\t", String.Substring(source, position, 1), True)
+            position += 1
+        End While
+        If position < String.Len(source) And String.Substring(source, position, 1) = "-" Then position += 1
+        Dim digitStart As Integer = position
+        While position < String.Len(source) And String.Contains("0123456789", String.Substring(source, position, 1), True)
+            position += 1
+        End While
+        If position = digitStart Then Return False
+        If position < String.Len(source) And Not String.Contains(" \r\n\t,}", String.Substring(source, position, 1), True) Then Return False
+    End While
+    Return True
+End Function
+
+Function IndexRecord(queue As String, allowPending As Boolean = False) As JSONItem
+    Dim pending As New FileSystemItem(Path.Join(queue, ".record-submission"))
+    Need(allowPending Or Not pending.Exists(), "pending local submission transaction; run recover-recording before reading/updating the queue")
+    Dim filename As String = Inside(Path.Join(queue, "index.json"), queue)
+    Dim source As String = ReadText(filename)
+    Dim index As JSONItem = Json.Parse(source)
+    Need(index.IsObject() And index.Value("schema").IsNumber() And index.Value("schema").AsNumber().Or(0) = 1 And IntegerTokens(source, "schema"), "queue index must be an object with schema 1")
+    Need(index.Value("issues").IsArray(), "queue index issues must be an array")
+    Dim identifiers As Array Of String = []
+    Dim directories As Array Of String = []
+    Dim rows As JSONItem = index.Value("issues")
+    For position As Integer = 0 To rows.Count() - 1
+        Dim row As JSONItem = rows.ValueAt(position)
+        Need(row.IsObject(), "queue index issue must be an object")
+        For Each key As String In ["id", "directory", "title", "status"]
+            Need(String.Trim(Text(row, key)) <> "", "queue index issue needs nonempty string " + key)
+        Next
+        Need(Status(Text(row, "status")), "unknown queue status: " + Text(row, "status"))
+        Dim directory As String = RelativeInside(queue, Text(row, "directory"), queue)
+        #If TargetWindows Then
+            directory = String.LCase(directory)
+        #End If
+        Need(Not Has(identifiers, Text(row, "id")) And Not Has(directories, directory), "duplicate queue issue ID or directory: " + Text(row, "id"))
+        Array.Append(identifiers, Text(row, "id"))
+        Array.Append(directories, directory)
+    Next
+    Return index
+End Function
+
+Class LocalIssue
+    Public Property Folder As String
+    Public Property Item As JSONItem
+    Public Property Row As JSONItem
+    Public Property Index As JSONItem
+End Class
+
+Function Load(queue As String, identifier As String, allowPending As Boolean = False) As LocalIssue
+    Dim found As New LocalIssue
+    found.Index = IndexRecord(queue, allowPending)
+    Dim rows As JSONItem = found.Index.Value("issues")
+    For position As Integer = 0 To rows.Count() - 1
+        Dim row As JSONItem = rows.ValueAt(position)
+        If Not Exact(Text(row, "id"), identifier) Then Continue For
+        found.Row = row
+        found.Folder = RelativeInside(queue, Text(row, "directory"), queue)
+        found.Item = ReadJSON(Inside(Path.Join(found.Folder, "issue.json"), queue))
+        Need(found.Item.IsObject(), "issue record must be an object")
+        Return found
+    Next
+    Throw New InvalidArgumentException("Unknown or duplicate issue ID: " + identifier)
+End Function
+
+Function Validate(queue As String, identifier As String, requireReady As Boolean, allowPending As Boolean = False) As Array Of String
+    Dim errors As Array Of String = []
+    Try
+        Dim loaded As LocalIssue = Load(queue, identifier, allowPending)
+        Dim item As JSONItem = loaded.Item
+        Dim state As String = Text(item, "status")
+        If item.Value("schema").AsNumber().Or(0) <> 1 Or Not Exact(Text(item, "id"), identifier) Then Array.Append(errors, "invalid schema or mismatched issue ID")
+        If Not Status(state) Or Not Exact(Text(loaded.Row, "status"), state) Then Array.Append(errors, "invalid status or index status differs from issue record")
+        For Each key As String In ["title", "component", "platforms", "author", "expectedCompilerOutcome"]
+            If Not Nonempty(item.Value(key)) Then Array.Append(errors, "missing " + key)
+        Next
+        Dim outcome As String = Text(item, "expectedCompilerOutcome")
+        If Not Has(["clean", "diagnostic-failure"], outcome) Then Array.Append(errors, "unknown expected compiler outcome")
+        Dim names As Array Of String = Array.AsResizable([Text(item, "repro"), Text(item, "body")])
+        Dim evidenceNames As JSONItem = item.Value("evidence")
+        Need(evidenceNames.IsArray(), "evidence must be an array")
+        For position As Integer = 0 To evidenceNames.Count() - 1
+            Need(evidenceNames.ValueAt(position).IsString(), "evidence path must be a string")
+            Array.Append(names, evidenceNames.ValueAt(position).AsString().Value)
+        Next
+        For Each name As String In names
+            Dim filename As String = RelativeInside(loaded.Folder, name, queue)
+            Dim file As New FileSystemItem(filename)
+            If Not file.IsFile() Then Array.Append(errors, "missing evidence/repro/body file: " + name)
+        Next
+        Dim source As String = RelativeInside(loaded.Folder, Text(item, "repro"), queue)
+        Dim evidencePath As String = Inside(Path.Join(loaded.Folder, "evidence.json"), queue)
+        If Not Has(names, "evidence.json") Then Array.Append(errors, "required evidence.json file/reference missing")
+        Dim evidenceText As String = ReadText(evidencePath)
+        Dim evidence As JSONItem = Json.Parse(evidenceText)
+        If Not Exact(Text(evidence, "sourceSha256"), Digest(source)) Then Array.Append(errors, "repro hash differs from recorded compiler/runtime evidence")
+        Dim checks As JSONItem = evidence.Value("compilerChecks")
+        Need(checks.IsArray(), "compilerChecks must be an array")
+        Dim targets As Array Of String = []
+        For position As Integer = 0 To checks.Count() - 1
+            Dim check As JSONItem = checks.ValueAt(position)
+            Need(check.IsObject(), "compiler record must be an object")
+            Dim command As JSONItem = check.Value("command")
+            Need(command.IsArray(), "compiler command must be an array")
+            For argument As Integer = 0 To command.Count() - 2
+                If Exact(command.ValueAt(argument).AsString().Or(""), "--target") Then
+                    Array.Append(targets, command.ValueAt(argument + 1).AsString().Or(""))
+                    Exit For
+                End If
+            Next
+            Dim exitCode As JSONItem = check.Value("exitCode")
+            Dim diagnostics As JSONItem = check.Value("diagnostics").Value("errors")
+            If Not exitCode.IsNumber() Or Not IntegerTokens(evidenceText, "exitCode") Or Not diagnostics.IsArray() Then Array.Append(errors, "compiler record needs integer exitCode and diagnostic errors array")
+            If outcome = "clean" And (exitCode.AsNumber().Or(-1) <> 0 Or diagnostics.Count() <> 0) Then Array.Append(errors, "clean reproduction has compiler errors/nonzero exit")
+            If outcome = "diagnostic-failure" And (diagnostics.Count() = 0 Or exitCode.AsNumber().Or(0) = 0) Then Array.Append(errors, "expected diagnostic failure was not recorded")
+        Next
+        Dim complete As Boolean = checks.Count() = 6 And Array.Count(targets) = 6
+        For Each target As String In ["x86_64-linux", "arm64-linux", "x86_64-darwin", "arm64-darwin", "x86_64-windows", "arm64-windows"]
+            If Not Has(targets, target) Then complete = False
+        Next
+        If Not complete Then Array.Append(errors, "exactly the six supported desktop target compiler records required")
+        If state = "validated" Or state = "ready" Or state = "submitted" Then
+            Dim phase As String = Text(item.Value("validation"), "phase")
+            If phase = "" Then phase = "runtime"
+            If Not Has(["check", "build", "runtime"], phase) Then Array.Append(errors, "unknown validation phase")
+            Dim phaseEvidence As Boolean = Nonempty(evidence.Value(phase))
+            If phase = "check" Then phaseEvidence = checks.Count() > 0
+            If Not TrueBoolean(item.Value("validation").Value("localReproduction")) Or Not phaseEvidence Then Array.Append(errors, "confirmed " + phase + " issue requires matching local evidence")
+        End If
+        Dim body As String = RelativeInside(loaded.Folder, Text(item, "body"), queue)
+        If Not Exact(Digest(body), Text(item, "bodySha256")) Then Array.Append(errors, "public body changed after recorded review; refresh review and body hash")
+        Dim search As JSONItem = ReadJSON(RelativeInside(loaded.Folder, Text(item, "duplicateSearch"), queue))
+        If Not Exact(Text(search, "repository"), Text(item.Value("submission"), "repository")) Or Not Nonempty(search.Value("checkedAt")) Then Array.Append(errors, "duplicate search has no date or repository mismatch")
+        Dim reviews As JSONItem = item.Value("reviews")
+        If reviews.IsNull() Then reviews = JSONItem.NewArray()
+        Need(reviews.IsArray(), "reviews must be an array")
+        Dim peerReproduction As Boolean = False
+        Dim peerAcceptance As Boolean = False
+        Dim queueFolder As New FileSystemItem(queue)
+        For position As Integer = 0 To reviews.Count() - 1
+            Dim review As JSONItem = reviews.ValueAt(position)
+            Dim reviewer As String = Text(review, "reviewer")
+            If String.Trim(reviewer) = "" Then Array.Append(errors, "review must identify a reviewer")
+            If Not review.Value("independentReproduction").IsBoolean() Then Array.Append(errors, "review independentReproduction must be a boolean")
+            Dim reviewFile As New FileSystemItem(RelativeInside(queueFolder.ParentPath(), Text(review, "evidence"), queueFolder.ParentPath()))
+            If Not reviewFile.IsFile() Then Array.Append(errors, "review evidence missing for " + reviewer)
+            If Not Nonempty(review.Value("objection")) Or Not Nonempty(review.Value("resolution")) Then Array.Append(errors, "review must record concrete objection and resolution")
+            If reviewer <> "" And Not Exact(reviewer, Text(item, "author")) Then
+                If TrueBoolean(review.Value("independentReproduction")) Then peerReproduction = True
+                If Has(["accepted", "accepted-with-scope"], Text(review, "decision")) Then peerAcceptance = True
+            End If
+        Next
+        If requireReady Or state = "ready" Or state = "submitted" Then
+            If state <> "ready" And state <> "submitted" Then Array.Append(errors, "issue is " + state + ", not ready")
+            If Not peerReproduction Then Array.Append(errors, "independent peer reproduction missing")
+            If Not peerAcceptance Then Array.Append(errors, "challenger acceptance with resolved objections missing")
+        End If
+        Dim submission As JSONItem = item.Value("submission")
+        If state = "submitted" And Text(submission, "url") = "" Then Array.Append(errors, "submitted issue needs remote URL")
+        If state = "submitted" And Not Exact(Text(submission, "submittedBodySha256"), Text(item, "bodySha256")) Then Array.Append(errors, "submitted body fingerprint differs; record a reviewed remote update explicitly")
+    Catch problem As Exception
+        Array.Append(errors, "invalid issue record: " + problem.Message)
+    End Try
+    Return errors
+End Function
+
+Function Digits(value As String) As Boolean
+    If value = "" Then Return False
+    For Each ch As String In String.Chars(value)
+        If Not String.Contains("0123456789", ch, True) Then Return False
+    Next
+    Return True
+End Function
+
+Function NumberPart(value As String, first As Integer, count As Integer) As Integer
+    Dim part As String = String.Substring(value, first, count)
+    Need(String.Len(part) = count And Digits(part), "invalid ISO duplicate-search timestamp")
+    Dim parsed As Integer = 0
+    For Each ch As String In String.Chars(part)
+        parsed = parsed * 10 + String.IndexOf("0123456789", ch)
+    Next
+    Return parsed
+End Function
+
+Function CheckedInstant(value As String) As DateTime
+    Need(String.Len(value) >= 20, "duplicate search checkedAt must include a timezone")
+    Need(String.Substring(value, 4, 1) = "-" And String.Substring(value, 7, 1) = "-" And Has(["T", "t", " "], String.Substring(value, 10, 1)) And String.Substring(value, 13, 1) = ":" And String.Substring(value, 16, 1) = ":", "invalid ISO duplicate-search timestamp")
+    Dim offset As Integer = 19
+    Dim milliseconds As Integer = 0
+    If String.Substring(value, offset, 1) = "." Then
+        offset += 1
+        Dim start As Integer = offset
+        While offset < String.Len(value) And String.Contains("0123456789", String.Substring(value, offset, 1), True)
+            offset += 1
+        End While
+        Need(offset > start, "invalid timestamp fraction")
+        Dim fraction As String = String.Substring(value, start, offset - start) + "000"
+        milliseconds = NumberPart(fraction, 0, 3)
+    End If
+    Dim zone As String = String.Substring(value, offset)
+    Dim seconds As Integer = 0
+    If zone <> "Z" And zone <> "z" Then
+        Need(String.Len(zone) = 6 And Has(["+", "-"], String.Substring(zone, 0, 1)) And String.Substring(zone, 3, 1) = ":", "duplicate search checkedAt must include a timezone")
+        Dim hours As Integer = NumberPart(zone, 1, 2)
+        Dim minutes As Integer = NumberPart(zone, 4, 2)
+        Need(hours <= 23 And minutes < 60, "invalid timestamp timezone")
+        seconds = hours * 3600 + minutes * 60
+        If String.StartsWith(zone, "-", True) Then seconds = -seconds
+    End If
+    Dim moment As DateTime = DateTime.FromComponents(NumberPart(value, 0, 4), NumberPart(value, 5, 2), NumberPart(value, 8, 2), NumberPart(value, 11, 2), NumberPart(value, 14, 2), NumberPart(value, 17, 2), milliseconds, TimeZone.Utc)
+    Return DateTime.FromUnixMillis(moment.MillisFrom1970 - seconds * 1000, TimeZone.Utc)
+End Function
+
+Function Quote(value As String) As String
+    Return "'" + String.Replace(value, "'", "'\"'\"'", String.Len(value), True) + "'"
+End Function
+
+Sub AtomicWrite(destination As String, body As String, staging As String)
+    WriteText(staging, body)
+    #If TargetWindows Then
+        Dim oldPath As Bytes = Wide(staging)
+        Dim newPath As Bytes = Wide(destination)
+        Need(ReplacePath(oldPath.DataPtr(), newPath.DataPtr(), 9) <> 0, "atomic file replacement failed: " + destination)
+    #Else
+        Need(ReplacePath(staging, destination) = 0, "atomic file replacement failed: " + destination)
+    #End If
+End Sub
+
+Function Pretty(value As JSONItem) As String
+    Dim options As New JSONOptions()
+    options.Compact = False
+    options.IndentSpacing = 2
+    Return Json.Stringify(value, options) + "\n"
+End Function
+
+Sub Recover(queue As String)
+    Dim transaction As String = Inside(Path.Join(queue, ".record-submission"), queue)
+    Dim journal As JSONItem = ReadJSON(Inside(Path.Join(transaction, "journal.json"), queue))
+    Need(journal.Value("schema").AsNumber().Or(0) = 1, "invalid local submission journal")
+    Dim identifier As String = Text(journal, "id")
+    Dim folder As String = RelativeInside(queue, Text(journal, "directory"), queue)
+    Dim issuePath As String = Inside(Path.Join(folder, "issue.json"), queue)
+    Dim indexPath As String = Inside(Path.Join(queue, "index.json"), queue)
+    Dim nextIssue As String = ReadText(Inside(Path.Join(transaction, "next-issue.json"), queue))
+    Dim nextIndex As String = ReadText(Inside(Path.Join(transaction, "next-index.json"), queue))
+    Dim item As JSONItem = Json.Parse(nextIssue)
+    Dim index As JSONItem = Json.Parse(nextIndex)
+    Need(Exact(Text(item, "id"), identifier) And Exact(Text(item, "status"), "submitted"), "invalid journal issue snapshot")
+    Need(Exact(Text(item.Value("submission"), "url"), Text(journal, "url")) And Exact(Text(item.Value("submission"), "submittedBodySha256"), Text(item, "bodySha256")), "journal submission fingerprint mismatch")
+    Need(Exact(Digest(Inside(Path.Join(transaction, "next-issue.json"), queue)), Text(journal, "issueSha256")) And Exact(Digest(Inside(Path.Join(transaction, "next-index.json"), queue)), Text(journal, "indexSha256")), "journal snapshot hash mismatch")
+    Need(index.Value("issues").IsArray(), "invalid journal queue snapshot")
+    Dim matches As Integer = 0
+    For position As Integer = 0 To index.Value("issues").Count() - 1
+        Dim row As JSONItem = index.Value("issues").ValueAt(position)
+        If Exact(Text(row, "id"), identifier) Then
+            Need(Exact(Text(row, "status"), "submitted") And Exact(RelativeInside(queue, Text(row, "directory"), queue), folder), "journal index snapshot mismatch")
+            matches += 1
+        End If
+    Next
+    Need(matches = 1, "journal issue ID missing or duplicated")
+    AtomicWrite(issuePath, nextIssue, Path.Join(transaction, "issue.stage"))
+    AtomicWrite(indexPath, nextIndex, Path.Join(transaction, "index.stage"))
+    Dim transactionFolder As New FileSystemItem(transaction)
+    Dim completed As New FileSystemItem(Path.Join(queue, ".record-submission.complete-" + Crypto.RandomBytes(8).ToHex()))
+    Need(transactionFolder.MoveTo(completed), "recording completed; journal detachment failed")
+    Need(completed.Delete(True), "recording completed; detached journal cleanup failed")
+    Print identifier + ": recorded " + Text(journal, "url")
+End Sub
+
+Sub Record(queue As String, identifier As String, url As String)
+    Dim errors As Array Of String = Validate(queue, identifier, True)
+    Need(Array.Count(errors) = 0, String.Join(errors, "; "))
+    Dim loaded As LocalIssue = Load(queue, identifier)
+    Dim submission As JSONItem = loaded.Item.Value("submission")
+    Need(Text(submission, "repository") <> "", "submission repository is missing")
+    Dim prefix As String = "https://github.com/" + Text(submission, "repository") + "/issues/"
+    Need(String.StartsWith(url, prefix, True) And Digits(String.Substring(url, String.Len(prefix))), "URL must identify an issue in the configured upstream repository")
+    Need(Text(submission, "url") = "" Or Exact(Text(submission, "url"), url), "a different remote URL is already recorded")
+    Dim transaction As String = Path.Join(queue, ".record-submission")
+    #If TargetWindows Then
+        Dim name As Bytes = Wide(transaction)
+        Need(ClaimDirectory(name.DataPtr(), Nil) <> 0, "cannot claim submission transaction directory")
+    #Else
+        Need(ClaimDirectory(transaction, 448) = 0, "cannot claim submission transaction directory")
+    #End If
+    ' Re-read under the exclusive claim. If interrupted, readers fail closed and
+    ' recover-recording completes the same URL rather than losing its receipt.
+    errors = Validate(queue, identifier, True, True)
+    Need(Array.Count(errors) = 0, String.Join(errors, "; "))
+    loaded = Load(queue, identifier, True)
+    submission = loaded.Item.Value("submission")
+    Need(Text(submission, "url") = "" Or Exact(Text(submission, "url"), url), "a different remote URL is already recorded")
+    submission.Value("state") = "submitted"
+    submission.Value("url") = url
+    submission.Value("submittedBodySha256") = Text(loaded.Item, "bodySha256")
+    submission.Value("submittedAt") = DateTime.Now(TimeZone.Utc).ToIso8601()
+    loaded.Item.Value("status") = "submitted"
+    loaded.Row.Value("status") = "submitted"
+    WriteText(Path.Join(transaction, "next-issue.json"), Pretty(loaded.Item))
+    WriteText(Path.Join(transaction, "next-index.json"), Pretty(loaded.Index))
+    Dim journal As JSONItem = JSONItem.NewObject()
+    journal.Value("schema") = 1
+    journal.Value("id") = identifier
+    journal.Value("directory") = Text(loaded.Row, "directory")
+    journal.Value("url") = url
+    journal.Value("issueSha256") = Digest(Path.Join(transaction, "next-issue.json"))
+    journal.Value("indexSha256") = Digest(Path.Join(transaction, "next-index.json"))
+    AtomicWrite(Path.Join(transaction, "journal.json"), Pretty(journal), Path.Join(transaction, "journal.stage"))
+    Recover(queue)
+End Sub
+
+Function DefaultQueue() As String
+    Dim folder As New FileSystemItem(FileSystemItem.ExecutableDirectory())
+    While folder <> Nil
+        If folder.Child("workspace.json").IsFile() Then Return folder.Child("upstream-issues").FullPath()
+        folder = folder.Parent
+    End While
+    Throw New InvalidArgumentException("workspace root not found above executable; pass --queue PATH")
+End Function
+
+Function Main(args As Array Of String) As Integer
+    Try
+        Dim queue As String = ""
+        Dim command As String = ""
+        Dim parameters As Array Of String = []
+        Dim ready As Boolean = False
+        For position As Integer = 1 To Array.Count(args) - 1
+            If Exact(args(position), "--queue") Then
+                Need(position + 1 < Array.Count(args), "--queue needs a directory")
+                position += 1
+                queue = args(position)
+            ElseIf Exact(args(position), "--ready") Then
+                ready = True
+            ElseIf Exact(args(position), "--help") Then
+                Print "upstream-issues [--queue PATH] list|validate [ID] [--ready]|render ID|plan-submit ID|record-submission ID URL|recover-recording"
+                Return 0
+            ElseIf command = "" Then
+                command = args(position)
+            Else
+                Array.Append(parameters, args(position))
+            End If
+        Next
+        If queue = "" Then queue = DefaultQueue()
+        queue = Canonical(queue)
+        If Exact(command, "recover-recording") Then
+            Need(Array.Count(parameters) = 0, "recover-recording takes no arguments")
+            Recover(queue)
+            Return 0
+        End If
+        Need(Has(["list", "validate", "render", "plan-submit", "record-submission"], command), "unknown command; use --help")
+        Need(Not ready Or Exact(command, "validate"), "--ready is only valid with validate")
+        Dim index As JSONItem = IndexRecord(queue)
+        Select Case command
+        Case "list"
+            Need(Array.Count(parameters) = 0, "list takes no arguments")
+            For position As Integer = 0 To index.Value("issues").Count() - 1
+                Dim row As JSONItem = index.Value("issues").ValueAt(position)
+                Print Text(row, "id") + "\t" + Text(row, "status") + "\t" + Text(row, "title")
+            Next
+        Case "validate"
+            Need(Array.Count(parameters) <= 1, "validate accepts at most one issue ID")
+            If Array.Count(parameters) = 0 Then
+                For position As Integer = 0 To index.Value("issues").Count() - 1
+                    Array.Append(parameters, Text(index.Value("issues").ValueAt(position), "id"))
+                Next
+            End If
+            Dim failed As Boolean = False
+            For Each identifier As String In parameters
+                Dim errors As Array Of String = Validate(queue, identifier, ready)
+                Dim message As String = "valid"
+                If Array.Count(errors) > 0 Then
+                    failed = True
+                    message = String.Join(errors, "; ")
+                End If
+                Print identifier + ": " + message
+            Next
+            If failed Then Return 1
+        Case "render", "plan-submit"
+            Need(Array.Count(parameters) = 1, command + " requires one issue ID")
+            Dim loaded As LocalIssue = Load(queue, parameters(0))
+            If command = "render" Then
+                StdOut.Write(ReadText(RelativeInside(loaded.Folder, Text(loaded.Item, "body"), queue)))
+            Else
+                Dim errors As Array Of String = Validate(queue, parameters(0), True)
+                Need(Array.Count(errors) = 0, String.Join(errors, "; "))
+                Need(Text(loaded.Item.Value("submission"), "url") = "", "already submitted; update the existing issue instead of creating a duplicate")
+                Need(Text(loaded.Item.Value("submission"), "repository") <> "", "submission repository is missing")
+                Dim search As JSONItem = ReadJSON(RelativeInside(loaded.Folder, Text(loaded.Item, "duplicateSearch"), queue))
+                Dim instant As DateTime = CheckedInstant(Text(search, "checkedAt"))
+                Dim age As Double = DateTime.Now(TimeZone.Utc).SecondsFrom1970 - instant.SecondsFrom1970
+                Need(age <= 86400 And age >= -300, "refresh upstream duplicate search before submission (older than 24 hours or future date)")
+                StdErr.WriteLine("Preparation only. Confirm current task authorization to publish and recheck duplicates before executing.")
+                Print "gh issue create --repo " + Quote(Text(loaded.Item.Value("submission"), "repository")) + " --title " + Quote(Text(loaded.Item, "title")) + " --body-file " + Quote(RelativeInside(loaded.Folder, Text(loaded.Item, "body"), queue))
+            End If
+        Case "record-submission"
+            Need(Array.Count(parameters) = 2, "record-submission requires ID and already-created URL")
+            Record(queue, parameters(0), parameters(1))
+        Case Else
+            Throw New InvalidArgumentException("unknown command; use --help")
+        End Select
+        Return 0
+    Catch problem As Exception
+        StdErr.WriteLine("upstream-issues: " + problem.Message)
+        Return 2
+    End Try
+End Function

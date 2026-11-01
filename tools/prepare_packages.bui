@@ -1,0 +1,186 @@
+Private Function ReadText(file As FileSystemItem) As String
+    Dim content As Result Of String, String = file.ReadAllText()
+    If content.IsErr Then Throw New IOException("Cannot read " + file.FullPath() + ": " + content.Error)
+    Return content.Value
+End Function
+
+Private Function ReadJSON(file As FileSystemItem) As JSONItem
+    Return Json.Parse(ReadText(file))
+End Function
+
+Private Function Serialize(value As JSONItem) As String
+    Dim options As New JSONOptions
+    options.Compact = False
+    Return Json.Stringify(value, options) + "\n"
+End Function
+
+Private Sub WriteText(file As FileSystemItem, body As String)
+    Dim outcome As Result Of Integer, String = file.WriteAllText(body)
+    If outcome.IsErr Then Throw New IOException("Cannot write " + file.FullPath() + ": " + outcome.Error)
+End Sub
+
+Private Function Contains(items As JSONItem, value As String) As Boolean
+    For i As Integer = 0 To items.Count() - 1
+        If items.ValueAt(i).AsString().Or("") = value Then Return True
+    Next
+    Return False
+End Function
+
+Private Sub AddFile(record As JSONItem, relative As String, body As String, repo As FileSystemItem)
+    If Not repo.Child(relative).Parent.CreateFolder(True) Then Throw New IOException("Cannot create input directory: " + relative)
+    WriteText(repo.Child(relative), body)
+    If Not Contains(record.Value("files"), relative) Then
+        record.Value("files").Add(relative)
+    End If
+    If repo.Child("manifest.json").IsFile() Then
+        If Not record.Value("integrationPaths").IsObject() Then record.Value("integrationPaths") = JSONItem.NewObject()
+        record.Value("integrationPaths").Value(relative) = "libraries/" + record.Value("name").AsString().Value + "/" + relative
+    End If
+End Sub
+
+Private Function GitSource(name As String) As JSONItem
+    Dim source As JSONItem = JSONItem.NewObject()
+    source.Value("git") = "https://github.com/BuoyBay/" + name + ".git"
+    source.Value("rev") = "refs/heads/main"
+    Return source
+End Function
+
+Private Function PubliclyListed(record As JSONItem) As Boolean
+    Dim policy As JSONItem = record.Value("publication")
+    If Not policy.IsObject() Then Return True
+    If policy.Value("visibility").AsString().Or("") = "private" Or policy.Value("hold").AsString().Or("") <> "" Then Return False
+    Return policy.Value("listed").AsBoolean().Or(True)
+End Function
+
+Private Sub InferImports(folder As FileSystemItem, known As JSONItem, ownName As String, dependencies As JSONItem)
+    If Not folder.IsFolder() Then Return
+    For Each file As FileSystemItem In folder.Children()
+        If file.IsFolder() Then
+            InferImports(file, known, ownName, dependencies)
+        ElseIf String.EndsWith(file.Name(), ".bui") Then
+            For Each sourceLine As String In String.Split(ReadText(file), "\n")
+                Dim line As String = String.Trim(sourceLine)
+                If String.StartsWith(String.LCase(line), "import ") Then
+                    Dim name As String = String.LCase(String.Split(String.Trim(String.Mid(line, 7)), " ")(0))
+                    name = String.Split(name, ".")(0)
+                    If name <> ownName And known.HasKey(name) Then dependencies.Value(name) = GitSource(name)
+                End If
+            Next
+        End If
+    Next
+End Sub
+
+Function Main(args As Array Of String) As Integer
+    Try
+        If Array.Count(args) = 2 And args(1) = "--help" Then
+            Print "usage: prepare-packages WORKSPACE_ROOT"
+            Print "       prepare-packages --include-private WORKSPACE_ROOT"
+            Print "Prepares initial main-ref dependency metadata and package-local licenses; no Git writes."
+            Print "Compile: buoy tools/prepare_packages.bui -o dist/prepare-packages"
+            Print "See PACKAGES.md for full commands and dependency/release policy."
+            Return 0
+        End If
+        Dim includePrivate As Boolean = False
+        Dim rootPath As String
+        If Array.Count(args) = 3 And args(1) = "--include-private" Then
+            includePrivate = True
+            rootPath = args(2)
+        ElseIf Array.Count(args) = 2 Then
+            rootPath = args(1)
+        Else
+            Throw New InvalidArgumentException("usage: prepare-packages [--include-private] WORKSPACE_ROOT")
+        End If
+        Dim root As New FileSystemItem(rootPath)
+        Dim config As JSONItem = ReadJSON(root.Child("workspace.json"))
+        Dim records As JSONItem = config.Value("repositories")
+        Dim known As JSONItem = JSONItem.NewObject()
+        For i As Integer = 0 To records.Count() - 1
+            Dim record As JSONItem = records.ValueAt(i)
+            Dim name As String = record.Value("name").AsString().Value
+            Dim repo As FileSystemItem = root.Child(record.Value("path").AsString().Value)
+            If repo.Child("manifest.json").IsFile() Or repo.Child("libraries/" + name + "/manifest.json").IsFile() Then known.Value(name) = True
+        Next
+        Dim mit As String = String.Replace(ReadText(root.Child("LICENSES/MIT.txt")), "Copyright (c) <year> <copyright holders>", "Copyright (c) 2026 Donald Lee Lunder 3rd", 1, True)
+        Dim apache As String = ReadText(root.Child("LICENSES/Apache-2.0.txt"))
+        Dim proseLicense As String = ReadText(root.Child("LICENSES/CC-BY-4.0.txt"))
+        Dim prepared As Integer = 0
+        For i As Integer = 0 To records.Count() - 1
+            Dim record As JSONItem = records.ValueAt(i)
+            Dim name As String = record.Value("name").AsString().Value
+            If Not known.HasKey(name) Then Continue For
+            If Not includePrivate And Not PubliclyListed(record) Then Continue For
+            Dim repo As FileSystemItem = root.Child(record.Value("path").AsString().Value)
+            Dim relative As String = ""
+            Dim folder As FileSystemItem = repo
+            If Not repo.Child("manifest.json").IsFile() Then
+                relative = "libraries/" + name + "/"
+                folder = repo.Child(relative)
+            End If
+            Dim settings As JSONItem = JSONItem.NewObject()
+            If folder.Child("bpm.json").IsFile() Then settings = ReadJSON(folder.Child("bpm.json"))
+            settings.Value("schema") = 1
+            Dim dependencies As JSONItem = settings.Value("dependencies")
+            If dependencies.IsNull() Then dependencies = JSONItem.NewObject()
+            For Each dependency As String In dependencies.Keys()
+                If known.HasKey(String.LCase(dependency)) Then
+                    dependencies.Value(dependency) = GitSource(String.LCase(dependency))
+                ElseIf name = "httpkit" And (dependency = "HTTPServer" Or dependency = "crypto") Then
+                    ' Compiler-supplied origins are recorded separately, never fabricated.
+                    dependencies.Remove(dependency)
+                ElseIf Not dependencies.Value(dependency).IsObject() Then
+                    Throw New InvalidArgumentException("Unknown dependency source requiring review: " + name + "/" + dependency)
+                End If
+            Next
+            InferImports(folder.Child("modules"), known, name, dependencies)
+            settings.Value("dependencies") = dependencies
+            Dim selected As JSONItem = settings.Value("files")
+            If Not selected.IsArray() Then selected = JSONItem.NewArray()
+            If name = "rbcodec" Then
+                Dim privateSelection As JSONItem = JSONItem.NewArray()
+                For j As Integer = 0 To selected.Count() - 1
+                    Dim input As String = selected.ValueAt(j).AsString().Value
+                    If input <> "LICENSE-MIT.txt" And input <> "LICENSE-APACHE.txt" And input <> "LICENSE-DOCS.txt" Then privateSelection.Add(input)
+                Next
+                selected = privateSelection
+            End If
+            For Each input As String In ["manifest.json", "modules", "declares", "resources", "link", "runtime", "README.md", "PROVENANCE.md", "UPSTREAM-LICENSE.txt"]
+                If folder.Child(input).Exists() And Not Contains(selected, input) Then selected.Add(input)
+            Next
+            For Each licenseFile As String In ["LICENSE", "LICENSE-MIT.txt", "LICENSE-APACHE.txt", "LICENSE-DOCS.txt", "NOTICE.md"]
+                If name = "rbcodec" And licenseFile <> "LICENSE" And licenseFile <> "NOTICE.md" Then Continue For
+                If Not Contains(selected, licenseFile) Then selected.Add(licenseFile)
+            Next
+            settings.Value("files") = selected
+            If name <> "rbcodec" Then
+            AddFile(record, relative + "LICENSE-MIT.txt", mit, repo)
+            AddFile(record, relative + "LICENSE-APACHE.txt", apache, repo)
+            AddFile(record, relative + "LICENSE-DOCS.txt", proseLicense, repo)
+            AddFile(record, relative + "LICENSE", "SPDX-License-Identifier: MIT OR Apache-2.0\n\nFirst-party code may be used under either LICENSE-MIT.txt or LICENSE-APACHE.txt.\nThird-party files retain their original licenses; see NOTICE.md and retained notices.\n", repo)
+            AddFile(record, relative + "NOTICE.md", "# Package notices\n\nFirst-party " + name + " code: Copyright (c) 2026 Donald Lee Lunder 3rd.\nLicensed under MIT OR Apache-2.0. Documentation prose follows CC-BY-4.0 under the repository licensing policy.\nThird-party source, data, fonts and runtime binaries retain their original copyright\nand license terms in the retained UPSTREAM-LICENSE, PROVENANCE and resource notices.\nThese package licenses do not relicense bundled third-party material or the Buoy compiler/runtime.\n", repo)
+            End If
+            If name = "httpkit" Then
+                AddFile(record, relative + "TOOLCHAIN-REQUIREMENTS.md", "# HTTPKit toolchain requirements\n\nBPM installs filesystemkit from BuoyBay. It does not download compiler-supplied packages.\nThe installed Buoy distribution must supply crypto 1.0.0 and the original HTTPServer 1.1.0\nused by compat/build.py. HTTPKit runtime use remains blocked until the consumer explicitly\nbuilds and installs HTTPServer-1.1.0-httpkit.1.buipkg as documented in README.md.\nThe unmodified installed HTTPServer is insufficient. Keep exactly one HTTPServer archive.\nNo BuoyBay HTTPServer or crypto repository is implied by this manifest.\n", repo)
+                If Not Contains(selected, "TOOLCHAIN-REQUIREMENTS.md") Then selected.Add("TOOLCHAIN-REQUIREMENTS.md")
+            End If
+            AddFile(record, relative + "bpm.json", Serialize(settings), repo)
+            ' The compiler seals known package directories, not arbitrary root files.
+            ' Keep applicable notices inside resources so installed archives retain them.
+            For Each notice As FileSystemItem In folder.Children()
+                Dim filename As String = String.UCase(notice.Name())
+                If notice.IsFile() And (String.Contains(filename, "LICENSE") Or String.Contains(filename, "NOTICE") Or String.Contains(filename, "PROVENANCE") Or String.Contains(filename, "ATTRIBUTION") Or filename = "LICENSING.MD") Then
+                    AddFile(record, relative + "resources/buoybay-licenses/" + notice.Name(), ReadText(notice), repo)
+                End If
+            Next
+            If Not Contains(selected, "resources") Then selected.Add("resources")
+            AddFile(record, relative + "bpm.json", Serialize(settings), repo)
+            Print name
+            prepared += 1
+        Next
+        WriteText(root.Child("workspace.json"), Serialize(config))
+        Print "Prepared " + String.From(prepared) + " package manifests and package-local license inputs. No versions or tags changed."
+        Return 0
+    Catch e As Exception
+        Print e.Message
+        Return 1
+    End Try
+End Function

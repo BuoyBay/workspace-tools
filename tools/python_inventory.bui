@@ -1,0 +1,157 @@
+' Reconcile the maintainer's exact Python exceptions with public ownership.
+
+Private Function ReadJSON(file As FileSystemItem) As JSONItem
+    Dim content As Result Of String, String = file.ReadAllText()
+    If content.IsErr Then Throw New IOException("Cannot read " + file.FullPath())
+    Return Json.Parse(content.Value)
+End Function
+
+Private Function Logical(record As JSONItem, physical As String) As String
+    Dim mapping As JSONItem = record.Value("integrationPaths")
+    If mapping.IsObject() And mapping.HasKey(physical) Then Return mapping.Value(physical).AsString().Value
+    Return physical
+End Function
+
+Private Sub SaveJSON(file As FileSystemItem, value As JSONItem)
+    Dim options As New JSONOptions
+    options.Compact = False
+    Dim outcome As Result Of Integer, String = file.WriteAllText(Json.Stringify(value, options) + "\n")
+    If outcome.IsErr Then Throw New IOException("Cannot write " + file.FullPath())
+End Sub
+
+Private Function Contains(items As JSONItem, value As String) As Boolean
+    For i As Integer = 0 To items.Count() - 1
+        If items.ValueAt(i).AsString().Or("") = value Then Return True
+    Next
+    Return False
+End Function
+
+Function Main(args As Array Of String) As Integer
+    Try
+        If Array.Count(args) <> 2 Then Throw New InvalidArgumentException("usage: python-inventory WORKSPACE_ROOT; requires local/python-public-policy.json")
+        Dim root As New FileSystemItem(args(1))
+        Dim config As JSONItem = ReadJSON(root.Child("workspace.json"))
+        Dim records As JSONItem = config.Value("repositories")
+        Dim policies As JSONItem = ReadJSON(root.Child("local/python-public-policy.json")).Value("repositories")
+        Dim known As JSONItem = JSONItem.NewObject()
+        For i As Integer = 0 To records.Count() - 1
+            known.Value(records.ValueAt(i).Value("name").AsString().Value) = records.ValueAt(i)
+        Next
+        Dim publicOwners As JSONItem = JSONItem.NewObject()
+        For i As Integer = 0 To policies.Count() - 1
+            Dim owner As JSONItem = JSONItem.NewObject()
+            Dim ownerName As String = policies.ValueAt(i).Value("name").AsString().Value
+            If known.HasKey(ownerName) Then owner = known.Value(ownerName)
+            Dim allowed As JSONItem = policies.ValueAt(i).Value("public")
+            For j As Integer = 0 To allowed.Count() - 1
+                publicOwners.Value(Logical(owner, allowed.ValueAt(j).Value("path").AsString().Value)) = True
+            Next
+        Next
+        Dim tests As JSONItem = JSONItem.NewObject()
+        Dim testsFile As FileSystemItem = root.Child("local/private-test-inventory.json")
+        If testsFile.IsFile() Then
+            Dim testRecords As JSONItem = ReadJSON(testsFile).Value("repositories")
+            For i As Integer = 0 To testRecords.Count() - 1
+                Dim files As JSONItem = testRecords.ValueAt(i).Value("files")
+                For j As Integer = 0 To files.Count() - 1
+                    tests.Value(Logical(testRecords.ValueAt(i), files.ValueAt(j).AsString().Value)) = True
+                Next
+            Next
+        End If
+        Dim previous As JSONItem = JSONItem.NewObject()
+        Dim privateFile As FileSystemItem = root.Child("local/private-tooling-inventory.json")
+        If privateFile.IsFile() Then
+            Dim saved As JSONItem = ReadJSON(privateFile).Value("repositories")
+            For i As Integer = 0 To saved.Count() - 1
+                previous.Value(saved.ValueAt(i).Value("name").AsString().Value) = saved.ValueAt(i)
+            Next
+        End If
+        Dim privateRecords As JSONItem = JSONItem.NewArray()
+        Dim removed As Integer = 0
+        Dim retained As Integer = 0
+        For i As Integer = 0 To policies.Count() - 1
+            Dim policy As JSONItem = policies.ValueAt(i)
+            Dim name As String = policy.Value("name").AsString().Value
+            Dim directory As String = policy.Value("path").AsString().Value
+            Dim repo As FileSystemItem = root
+            If directory <> "." Then repo = root.Child(directory)
+            Dim record As JSONItem = JSONItem.NewObject()
+            record.Value("files") = JSONItem.NewArray()
+            If known.HasKey(name) Then record = known.Value(name)
+            Dim allowed As JSONItem = policy.Value("public")
+            Dim allowedPaths As JSONItem = JSONItem.NewObject()
+            For j As Integer = 0 To allowed.Count() - 1
+                allowedPaths.Value(allowed.ValueAt(j).Value("path").AsString().Value) = True
+            Next
+            Dim privatePaths As JSONItem = JSONItem.NewObject()
+            Dim privateMappings As JSONItem = JSONItem.NewObject()
+            If previous.HasKey(name) Then
+                If previous.Value(name).Value("integrationPaths").IsObject() Then privateMappings = previous.Value(name).Value("integrationPaths")
+                Dim files As JSONItem = previous.Value(name).Value("files")
+                For j As Integer = 0 To files.Count() - 1
+                    privatePaths.Value(files.ValueAt(j).AsString().Value) = True
+                Next
+            End If
+            Dim kept As JSONItem = JSONItem.NewArray()
+            Dim files As JSONItem = record.Value("files")
+            For j As Integer = 0 To files.Count() - 1
+                Dim relative As String = files.ValueAt(j).AsString().Value
+                If String.EndsWith(relative, ".py") And Not allowedPaths.HasKey(relative) Then
+                    privatePaths.Value(relative) = True
+                    Dim sourceMappings As JSONItem = record.Value("integrationPaths")
+                    If sourceMappings.IsObject() And sourceMappings.HasKey(relative) Then privateMappings.Value(relative) = sourceMappings.Value(relative)
+                    removed += 1
+                Else
+                    kept.Add(relative)
+                End If
+            Next
+            For j As Integer = 0 To allowed.Count() - 1
+                Dim relative As String = allowed.ValueAt(j).Value("path").AsString().Value
+                If Not repo.Child(relative).IsFile() Then Throw New IOException("Allowed Python file missing: " + name + "/" + relative)
+                If Not Contains(kept, relative) Then kept.Add(relative)
+                retained += 1
+            Next
+            record.Value("files") = kept
+            Dim keptMappings As JSONItem = JSONItem.NewObject()
+            Dim sourceMappings As JSONItem = record.Value("integrationPaths")
+            If sourceMappings.IsObject() Then
+                For j As Integer = 0 To kept.Count() - 1
+                    Dim relative As String = kept.ValueAt(j).AsString().Value
+                    If sourceMappings.HasKey(relative) Then keptMappings.Value(relative) = sourceMappings.Value(relative)
+                Next
+                record.Value("integrationPaths") = keptMappings
+            End If
+            Dim excluded As JSONItem = policy.Value("untracked_paths")
+            For j As Integer = 0 To excluded.Count() - 1
+                privatePaths.Value(excluded.ValueAt(j).AsString().Value) = True
+            Next
+            Dim privateRecord As JSONItem = JSONItem.NewObject()
+            privateRecord.Value("name") = name
+            privateRecord.Value("path") = directory
+            Dim privateFiles As JSONItem = JSONItem.NewArray()
+            For Each relative As String In privatePaths.Keys()
+                Dim logicalPath As String = relative
+                If privateMappings.HasKey(relative) Then logicalPath = privateMappings.Value(relative).AsString().Value
+                If Not publicOwners.HasKey(logicalPath) And Not tests.HasKey(logicalPath) And repo.Child(relative).IsFile() Then privateFiles.Add(relative)
+            Next
+            privateRecord.Value("files") = privateFiles
+            Dim savedMappings As JSONItem = JSONItem.NewObject()
+            For j As Integer = 0 To privateFiles.Count() - 1
+                Dim relative As String = privateFiles.ValueAt(j).AsString().Value
+                If privateMappings.HasKey(relative) Then savedMappings.Value(relative) = privateMappings.Value(relative)
+            Next
+            privateRecord.Value("integrationPaths") = savedMappings
+            privateRecords.Add(privateRecord)
+        Next
+        Dim inventory As JSONItem = JSONItem.NewObject()
+        inventory.Value("schema") = 1
+        inventory.Value("repositories") = privateRecords
+        SaveJSON(privateFile, inventory)
+        SaveJSON(root.Child("workspace.json"), config)
+        Print "Removed " + String.From(removed) + " Python inputs from public ownership; retained " + String.From(retained) + " exact production exceptions."
+        Return 0
+    Catch error As Exception
+        StdErr.WriteLine(error.Message)
+        Return 1
+    End Try
+End Function
