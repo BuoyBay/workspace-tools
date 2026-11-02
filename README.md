@@ -1,4 +1,4 @@
-# Manage independent package, IDE and developer-tool checkouts
+# Checkout manager for package, IDE, and tool repos
 
 `workspace-tools` keeps BuoyBay package, IDE and developer-tool repositories
 working together. It owns the checkout inventory and native workspace commands;
