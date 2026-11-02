@@ -17,11 +17,12 @@ GitHub supports topics for a project's language, purpose, and community; topics
 are searchable and appear on repository pages. Topics do not set the language
 statistics. [GitHub topic documentation](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics)
 
-Recommended common topics are `buoy`, `buoy-language`, and `buoybay`. Add
+Recommended common topics are `buoy` and `buoy-language`. Add
 `buoy-package` to compiler packages. Use `buoyscript` where the project actually
 supports scripts or script execution, rather than adding it to every native
 library. Add purpose-specific topics such as `package-manager`, `developer-tools`,
-`ide`, `syntax-highlighting`, or `gtk` when appropriate.
+`ide`, `syntax-highlighting`, or `gtk` when appropriate. Leave the organization
+name off the topic list.
 
 Descriptions should identify the package's concrete purpose and the language, for
 example: "Generic ordered search and stable sorted copies for Buoy". Studio can

@@ -9095,7 +9095,6 @@
       "topics": [
         "buoy",
         "buoy-language",
-        "buoybay",
         "website",
         "package-catalog"
       ],
@@ -9160,7 +9159,6 @@
       "topics": [
         "buoy",
         "buoy-language",
-        "buoybay",
         "continuous-integration",
         "native-builds"
       ],
