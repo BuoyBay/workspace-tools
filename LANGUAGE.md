@@ -3,7 +3,6 @@
 The source language and the GitHub language badge are separate concerns. Convert
 operational Python entrypoints into working Buoy or BuoyScript executables, then
 retire Python implementations after their behavior is covered by the native path.
-Keep existing Python regression tests while they still verify useful contracts.
 
 As checked on 2026-11-01, GitHub Linguist's current language registry has no entry
 for Buoy, BuoyScript, or `.bui`. Reducing Python therefore cannot by itself make
@@ -45,17 +44,10 @@ be marked `linguist-vendored`, and genuinely generated output may be marked
 source until ported. Bundled native C and Rust helpers remain their actual
 languages. [Linguist classification overrides](https://github.com/github-linguist/linguist/blob/main/docs/overrides.md)
 
-One verified vendor candidate is Scene3DKit's
-`repos/scene3dkit/native/vendor/stb_image.h`, whose adjacent `PROVENANCE.json`
-records upstream commit, hash, and license. A repository-local attribute could
-mark that exact vendor tree. Preserve its code and notices. Do not mark all
-`native/` code as vendored: it also contains original bridges. No attributes were
-added during this audit.
-
 ## Future Linguist support
 
 The workspace already contains a TextMate grammar at
-`repos/buoy-highlighting/buoy.tmLanguage.json`, with
+[buoy-highlighting](https://github.com/BuoyBay/buoy-highlighting/blob/main/buoy.tmLanguage.json), with
 scope `source.buoy`. That is a useful starting input for a future Linguist
 contribution; its compatibility and license still need to satisfy the upstream
 submission process.
@@ -69,10 +61,8 @@ one organization does not establish that distribution. Prepare upstream support
 when real usage meets the policy; publishing these packages does not guarantee
 acceptance or immediate GitHub deployment. [Linguist contribution policy](https://github.com/github-linguist/linguist/blob/main/CONTRIBUTING.md#adding-a-language)
 
-## Local audit scope
+## Native-tooling inventory
 
-The current public Python inventory contains 50 explicitly retained production
-files across nine repositories, documented in [PYTHON.md](PYTHON.md). Dedicated
-tests and validation generators remain private and ignored. Native ports change
-the implementation language; metadata alone cannot add a language to Linguist.
-This workspace does not run or modify GitHub's deployed language detector.
+The retained production Python entrypoints and their responsibilities are listed
+in [PYTHON.md](PYTHON.md). Native ports change the implementation language;
+GitHub language recognition follows Linguist's supported-language registry.

@@ -1,41 +1,29 @@
-# Replace Python automation with native Buoy tools
+# Native tooling and compatibility
 
-New automation belongs in Buoy or BuoyScript. Each public checkout ignores Python
-by default; an individual production exception needs an exact ignore-rule carve
-out and a rationale in its `PYTHON.md`. Private reference tests remain local.
+New automation belongs in Buoy or BuoyScript. Python files are ignored by default;
+production exceptions need an exact path and a rationale in the owning
+`PYTHON.md`.
 
-The current native paths cover:
+The native entrypoints cover workspace inventory and assembly, package preparation
+and catalogs, issue-record management, Linux BPM/Ahoy builds, generic package builds,
+Linux Studio staging/linking, CI receipts, release catalogs and website helpers.
 
-- Workspace inventory, verification and assembly; package preparation, catalog
-  generation, Python inventory and private issue-queue management.
-- Linux BPM and Ahoy builds, including fresh process-host compilation, package
-  sealing, target checks and runtime deployment.
-- Generic package builds and Linux Studio staging, native bridge compilation,
-  dependency sealing and application linking.
-- The reusable CI receipt validator, release catalog, website server and website
-  content/build helpers.
+BPM, Ahoy and buoy-run execute natively. Ahoy's recipe engine still uses its
+retained Python helpers. Studio's platform-specific macOS/Windows packaging,
+some native-backend builders and several IDE runtime helpers also retain Python
+implementations. See [PYTHON.md](PYTHON.md) for the remaining production interfaces.
 
-BPM, Ahoy and buoy-run clients execute natively. Ahoy's recipe engine still uses
-its explicitly retained Python helpers. Studio's retained Python producer covers
-platform-specific packaging on macOS and Windows; supporting shared modules and
-some specialist native builders also remain production exceptions. There are
-50 such files across nine source repositories. See the owning `PYTHON.md` files
-for the concrete port boundaries; this is not a Python-free distribution yet.
+Port behavior in bounded steps. Preserve argument arrays, toolchain overrides,
+deployment hashes, signing behavior and upstream notices. Compare actual build
+and runtime behavior before replacing a working entrypoint. Cross-target checks
+supplement execution on the supported host.
 
-Port remaining behavior in bounded steps, preserving argument arrays, explicit
-toolchain overrides, deployment hashes, signing behavior and upstream notices.
-Compare actual build and runtime behavior before removing a working fallback.
-Cross-target compiler checks supplement native-host execution.
+Ahoy is the developer toolkit; buoy-run runs scripts and the interactive scratchpad.
+Existing recipe aliases and environment overrides remain supported where they are
+part of the interface. Compiler packages use repository-root manifests and
+application sources use `src/`; workspace assembly supplies logical paths for
+builders that need combined sources.
 
-Ahoy is the developer-tool name. The separate buoy-run interpreter remains until
-the corresponding script functionality is integrated into the official language
-and compiler. Existing recipe aliases and environment overrides remain supported
-where they are part of the current interface.
-
-Packages use repository-root manifests; application sources use `src/`.
-Workspace assembly preserves logical integration paths for tools that still need
-combined sources. It never imports old Git history or publishes private suites.
-
-The highlighting npm package uses `@buoybay/buoy-highlighting` and remains
-`private: true` until an npm release is explicitly prepared. GitHub source
-publication does not publish npm packages, SDK container images or a live website.
+The highlighting npm package is `@buoybay/buoy-highlighting`. Its `private: true`
+setting prevents accidental npm publication. Source pushes, npm publication,
+container-image publication and website deployment are separate operations.

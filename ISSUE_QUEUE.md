@@ -1,29 +1,37 @@
-# Maintain a private compiler-issue queue
+# Manage compiler-issue records
 
-`tools/upstream_issues.bui` validates and renders local issue records. It does
-not submit issues or comments to GitHub. Queue contents can include private
-reproducers and review evidence, so they stay outside the public source tree.
+`tools/upstream_issues.bui` validates and renders issue records. It prepares
+submission text and records submission receipts; posting to GitHub is a separate
+action.
 
-Compile into an isolated output directory:
+The tool uses the Crypto package from the matching Buoy SDK. Set
+`CRYPTO_ARCHIVE` to that installed `.buipkg` archive, then build in an isolated
+directory:
 
 ```sh
-mkdir -p dist/issue-queue
-buoy tools/upstream_issues.bui -o dist/issue-queue/upstream-issues
+mkdir -p local/issue-queue-build/packages local/issue-queue-build/bin
+cp tools/upstream_issues.bui local/issue-queue-build/main.bui
+cp "$CRYPTO_ARCHIVE" local/issue-queue-build/packages/
+(
+  cd local/issue-queue-build
+  buoy main.bui -o bin/upstream-issues
+)
 ```
 
-For a new queue, create an ignored `local/issues/` directory with an `index.json`
-containing the following object. Preserve an existing queue rather than
-overwriting its index.
+Choose a directory for your queue. Initialize a new `index.json` with:
 
 ```json
 {"schema": 1, "issues": []}
 ```
 
+For a queue created at `local/issues/`:
+
 ```sh
-./dist/issue-queue/upstream-issues --queue "$PWD/local/issues" list
-./dist/issue-queue/upstream-issues --help
+./local/issue-queue-build/bin/upstream-issues --queue "$PWD/local/issues" list
+./local/issue-queue-build/bin/upstream-issues --help
 ```
 
-Use `--queue` explicitly when working with more than one private queue. The
-workspace's default `upstream-issues/` directory is also ignored. Keep private
-reproduction files, machine details and submission receipts out of public commits.
+Use `--queue` to select the records to inspect. Preserve an existing index when
+adding issues. Keep reproducible inputs, expected and observed behavior, compiler
+version and command results with each record. Review generated submission text
+before posting and record the returned issue URL afterward.

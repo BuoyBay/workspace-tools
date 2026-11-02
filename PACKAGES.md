@@ -10,13 +10,13 @@ not establish a tested release by itself.
 manifest versions, expected version tag names, and a limited metadata audit. Its
 `source` objects can be copied directly into a consumer's `bpm.json` dependencies.
 Check that the recorded revisions have been pushed before installing them remotely.
-The catalog lists only packages eligible for public listing. Packages on a
-publication or license-review hold are omitted; the audit still checks every
-local package. The catalog is an inventory, not a registry or a list of supported releases.
+The catalog follows the listing and release-selection settings in `workspace.json`.
+It is an acquisition inventory; consult each package's requirements and release
+notes before selecting a version.
 
 ## Install from an exact commit
 
-Build BPM as described in its [build guide](repos/bpm/src/README.md).
+Build BPM as described in its [build guide](https://github.com/BuoyBay/bpm/blob/main/src/README.md).
 From an empty consumer directory:
 
 ```sh
@@ -32,9 +32,9 @@ records exact Git revisions, source hashes and archive hashes. `bpm install`
 restores a locked selection; `bpm vendor` retains exact package archives for
 offline `bpm ci`.
 
-On this Linux installation, set `BPM_PACKAGER=/usr/bin/buoy` for BPM packaging.
-The `/usr/local/bin/buoy` compiler wrapper supplies native linking overrides but
-cannot dispatch `pkg` commands correctly. Keep the wrapper for ordinary builds.
+Set `BPM_PACKAGER` to the installed executable that supports `pkg seal` when
+your compile wrapper cannot dispatch package commands. Keep your compiler
+selection for ordinary builds.
 
 Pure packages such as MathKit or AlgorithmKit are useful first consumer checks.
 Install one into a fresh directory and build a consumer using its documented API.
@@ -94,8 +94,9 @@ installed HTTPServer archive is insufficient. Read its package-local
 
 `tools/prepare_packages.bui` prepares package-local dual licenses, documentation
 licensing, source dependency objects and import-derived sibling dependencies.
-It skips private, held and unlisted repositories by default. An authorized
-maintainer can pass `--include-private` explicitly; RBCodec retains its reserved-rights policy.
+Its default selection follows `workspace.json`. Use `--include-private` when
+explicitly preparing additional configured entries. Preserve each project's
+license policy when selecting inputs.
 It updates current physical file ownership and logical integration paths in
 `workspace.json`. It does not change compiler
 manifest versions, create tags, stage files, commit, or push. Review dependency decisions before running it
